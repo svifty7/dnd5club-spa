@@ -1,0 +1,70 @@
+// media quires
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1280px;
+
+@mixin media($breakpoint) {
+  @if $breakpoint == all {
+    @media screen {
+      @content;
+    }
+  } @else if $breakpoint != all {
+    @media screen and (min-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+// Colors
+
+// Fonts
+@import "fonts";
+
+// Mixins
+@mixin css_anim($time: .3s, $item: all, $style: ease-in-out) {
+  transition: $item $style $time;
+
+  &:hover {
+    transition: $item $style $time;
+  }
+}
+
+@mixin empty-block($width, $height: $width, $display: block) {
+  content: '';
+  display: $display;
+  width: $width;
+  height: $height;
+}
+
+@mixin back-img($size: cover, $posX: center, $posY: center, $repeat: no-repeat) {
+  background-size: $size;
+  background-position-x: $posX;
+  background-position-y: $posY;
+  background-repeat: $repeat;
+}
+
+// <transition name="<class>"/>
+.fade {
+  &-enter, &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-to, &-leave {
+    opacity: 1;
+  }
+
+  &-enter-active, &-leave-active {
+    @include css_anim;
+  }
+}
+
+.vue-anim {
+  &-fade-enter-active {
+    @include css_anim;
+  }
+
+  &-fade-leave-active {
+    transition: none;
+  }
+}
