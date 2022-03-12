@@ -1,10 +1,12 @@
 // media quires
+$xs: 0;
 $sm: 576px;
 $md: 768px;
 $lg: 992px;
-$xl: 1280px;
+$xl: 1200px;
+$xxl: 1400px;
 
-@mixin media($breakpoint) {
+@mixin media-min($breakpoint) {
   @if $breakpoint == all {
     @media screen {
       @content;
@@ -16,10 +18,29 @@ $xl: 1280px;
   }
 }
 
-// Colors
+@mixin media-max($breakpoint) {
+  @if $breakpoint == all {
+    @media screen {
+      @content;
+    }
+  } @else if $breakpoint != all {
+    @media screen and (max-width: $breakpoint - 1px) {
+      @content;
+    }
+  }
+}
 
-// Fonts
-@import "fonts";
+@mixin media-minmax($min, $max) {
+    @media screen and (max-width: $min - 1px), screen and (min-width: $max) {
+      @content;
+    }
+}
+
+@mixin media-fromto($min, $max) {
+    @media screen and (min-width: $min - 1px) and (max-width: $max) {
+      @content;
+    }
+}
 
 // Mixins
 @mixin css_anim($time: .3s, $item: all, $style: ease-in-out) {
@@ -46,11 +67,11 @@ $xl: 1280px;
 
 // <transition name="<class>"/>
 .fade {
-  &-enter, &-leave-to {
+  &-enter-from, &-leave-to {
     opacity: 0;
   }
 
-  &-enter-to, &-leave {
+  &-enter-to, &-leave-from {
     opacity: 1;
   }
 

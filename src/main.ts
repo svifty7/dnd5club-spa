@@ -1,11 +1,12 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import '@/assets/styles/index.scss';
 import router from './router';
-import store from './store';
 
 const app = createApp(App);
+const pinia = createPinia();
 
-app.use(store)
-  .use(router)
-  .mount('#app');
+app.use(pinia)
+    .use(router)
+    .mount('#dnd5club');

@@ -8,22 +8,34 @@
   -webkit-overflow-scrolling: touch;
 }
 
-a {
-  @include css_anim;
-
-  text-decoration: none;
-
-  &:hover {
-  }
-
-  &.is-active {
-  }
-}
-
 .hidden {
   display: none !important;
 }
 
 .schema {
   display: none !important;
+}
+
+body {
+  display: flex;
+  font-family: 'Open Sans', serif;
+  background-color: var(--bg-main);
+  font-size: var(--main-font-size);
+  outline: none;
+  color: var(--text-color);
+}
+
+html,
+body,
+#dnd5club,
+.dnd5club {
+  width: 100%;
+  height: calc(100% - 0px);
+  overflow: hidden auto;
+}
+
+button {
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
 }

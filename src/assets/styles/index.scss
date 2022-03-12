@@ -1,5 +1,9 @@
 // Dependencies
 @import "normalize.css";
 
+// Themes
+@import "_theme";
+
 // Base styles
+@import "typography";
 @import "base";
