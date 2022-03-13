@@ -130,6 +130,11 @@
             background-color: var(--bg-main);
             color: var(--primary);
 
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+
             @include media-min($xl) {
                 display: flex;
             }
