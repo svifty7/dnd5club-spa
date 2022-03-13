@@ -9,7 +9,6 @@
         >
             <div class="nav-item__icon">
                 <svg-icon
-                    size="24"
                     :icon-name="`${currentIcon}-theme`"
                     :fill-enable="true"
                     :stroke-enable="true"

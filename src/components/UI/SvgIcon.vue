@@ -1,7 +1,6 @@
 <template>
     <svg
         xmlns="http://www.w3.org/2000/svg"
-        :style="style"
         class="svg-icon"
         :class="classList"
         viewBox="0 0 16 16"
@@ -14,11 +13,9 @@
 
 <script>
     import '@/common/utils/SvgRequire.ts';
-    import SvgIconInfo from '@/common/mixins/SvgIconInfo';
 
     export default {
         name: 'SvgIcon',
-        mixins: [SvgIconInfo],
         props: {
             iconName: {
                 type: String,
@@ -54,6 +51,8 @@
         overflow: hidden;
         flex-shrink: 0;
         display: block;
+        width: 100%;
+        height: 100%;
 
         &.svg-color {
             stroke: currentColor;

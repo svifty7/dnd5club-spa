@@ -10,7 +10,6 @@
                         icon-name="search"
                         :fill-enable="true"
                         :stroke-enable="false"
-                        size="20"
                     />
                 </button>
 
@@ -35,10 +34,7 @@
                     class="home__search_btn--reset"
                     @click.left.exact.prevent="search = ''"
                 >
-                    <svg-icon
-                        icon-name="close"
-                        size="12"
-                    />
+                    <svg-icon icon-name="close"/>
                 </button>
             </div>
 
@@ -48,10 +44,7 @@
                 href="https://badmimic.com/?partner=dnd5.club"
                 class="home__store"
             >
-                <svg-icon
-                    icon-name="store"
-                    size="28"
-                />
+                <svg-icon icon-name="store"/>
 
                 <span class="home__store_label">Магазин миниатюр</span>
             </a>
@@ -65,10 +58,7 @@
                 class="home__link"
             >
                 <div class="home__link_icon">
-                    <svg-icon
-                        size="40"
-                        :icon-name="link.name"
-                    />
+                    <svg-icon :icon-name="`home-menu-${link.name}`"/>
                 </div>
 
                 <div class="home__link_name">
@@ -393,6 +383,20 @@
                     color: var(--text-color-title);
                     flex-shrink: 0;
                 }
+
+                &--search {
+                    svg {
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+
+                &--reset {
+                    svg {
+                        width: 12px;
+                        height: 12px;
+                    }
+                }
             }
 
             &_input {
@@ -435,6 +439,12 @@
                 width: auto;
                 border-radius: 32px;
                 padding: 8px 16px;
+            }
+
+            svg {
+                display: block;
+                width: 28px;
+                height: 28px;
             }
 
             &_label {
@@ -517,6 +527,11 @@
                 width: 40px;
                 height: 40px;
                 color: var(--primary);
+
+                @include media-min($sm) {
+                    width: 50px;
+                    height: 50px;
+                }
             }
 
             &_name {

@@ -2,7 +2,6 @@
     <svg
         viewBox="0 0 50 50"
         fill="none"
-        :style="style"
         xmlns="http://www.w3.org/2000/svg"
         class="site-logo"
     >
@@ -28,16 +27,19 @@
 </template>
 
 <script>
-    import SvgIconInfo from '@/common/mixins/SvgIconInfo';
-
     export default {
         name: 'SiteLogo',
-        mixins: [SvgIconInfo],
     }
 </script>
 
 <style lang="scss" scoped>
     .site-logo {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: block;
+
         &__base {
             fill: var(--logo-base-color);
         }

@@ -18,7 +18,7 @@
             :to="{name: 'home'}"
             class="nav-head__logo"
         >
-            <site-logo size="52"/>
+            <site-logo/>
         </router-link>
 
         <button
@@ -99,6 +99,11 @@
             width: 72px;
             height: 72px;
             position: relative;
+
+            svg {
+                width: 52px;
+                height: 52px;
+            }
 
             &:after {
                 content: 'β';

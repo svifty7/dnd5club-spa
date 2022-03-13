@@ -19,10 +19,7 @@
                 @click.left.prevent.exact="handleTriggerClick(navigate)"
             >
                 <div class="nav-item__icon">
-                    <svg-icon
-                        size="24"
-                        :icon-name="navItem.icon"
-                    />
+                    <svg-icon :icon-name="`left-menu-${navItem.icon}`"/>
                 </div>
 
                 <div class="nav-item__name">
@@ -33,10 +30,7 @@
                     v-if="hasChildren"
                     class="nav-item__arrow"
                 >
-                    <svg-icon
-                        icon-name="arrow-stroke"
-                        size="24"
-                    />
+                    <svg-icon icon-name="arrow-stroke"/>
                 </div>
             </a>
 
@@ -87,10 +81,7 @@
             @click.left.exact.prevent="toggleSubmenu(navItem.label)"
         >
             <div class="nav-item__icon">
-                <svg-icon
-                    size="24"
-                    :icon-name="navItem.icon"
-                />
+                <svg-icon :icon-name="`left-menu-${navItem.icon}`"/>
             </div>
 
             <div class="nav-item__name">
@@ -98,10 +89,7 @@
             </div>
 
             <div class="nav-item__arrow">
-                <svg-icon
-                    icon-name="arrow-stroke"
-                    size="24"
-                />
+                <svg-icon icon-name="arrow-stroke"/>
             </div>
         </div>
 
