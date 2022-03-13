@@ -40,17 +40,18 @@
             NavItem,
             NavHead
         },
+        data() {
+            return {
+                isMenuShow: false,
+            }
+        },
         computed: {
             ...mapState(useUIStore, {
                 menuConfig: 'getMenuConfig',
             }),
 
-            isMenuShow() {
-                if (window.innerWidth >= 768) {
-                    return true;
-                }
-
-                return this.menuConfig.show;
+            menuState() {
+                return this.menuConfig.show
             },
 
             menuItems() {
@@ -100,10 +101,31 @@
                 return getRoutes(ROUTES);
             }
         },
+        watch: {
+            menuState(newValue) {
+                this.isMenuShow = newValue
+            }
+        },
+        mounted() {
+            window.addEventListener('resize', this.setMenuShowing);
+        },
+        beforeUnmount() {
+            window.removeEventListener('resize', this.setMenuShowing);
+        },
         methods: {
             ...mapActions(useUIStore, {
                 toggleMenuSize: 'toggleMenuSize',
             }),
+
+            setMenuShowing() {
+                if (window.innerWidth >= 768) {
+                    this.isMenuShow = true;
+
+                    return
+                }
+
+                this.isMenuShow = this.menuConfig.show;
+            },
         }
     };
 </script>
