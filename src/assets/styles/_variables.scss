@@ -43,7 +43,7 @@ $xxl: 1400px;
 }
 
 // Mixins
-@mixin css_anim($time: .3s, $item: all, $style: ease-in-out) {
+@mixin css_anim($time: .15s, $item: all, $style: ease-in-out) {
   transition: $item $style $time;
 
   &:hover {

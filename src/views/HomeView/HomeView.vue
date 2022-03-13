@@ -43,6 +43,7 @@
             </div>
 
             <a
+                v-tooltip.bottom-end="'Наши друзья магазин миниатюр Bad Mimic'"
                 target="_blank"
                 href="https://badmimic.com/?partner=dnd5.club"
                 class="home__store"
@@ -157,10 +158,10 @@
 
             <p class="home__info_friends">
                 <a
+                    v-tooltip="{content: 'Канал расскжет вам о тонкостях и нюансах игры в онлайне. Поможет разобраться с виртуальными столами.<br/> Упростит подготовку к вашей игре. Автоматизирует максимум процессов игровой механики. <br />Всё, чтобы игра стала атмосфернее и интереснее.', html: true}"
                     href="https://www.youtube.com/channel/UCMfMw5ZX4_rZ4rv4TlY8j8g?partner=dnd5.club"
                     class="home__info_friend"
                     target="_blank"
-                    title="Канал расскажет вам о тонкостях и нюансах игры в онлайне. Поможет разобраться с виртуальными столами. Упростит подготовку к вашей игре. Автоматизирует максимум процессов игровой механики. Всё, чтобы игра стала атмосфернее и интереснее."
                 >
                     <img
                         src="https://dnd5.club/resources/assets/partner/koroz.png"
@@ -170,10 +171,10 @@
                     <span>«Онлайн ширма»</span>
                 </a>
                 <a
+                    v-tooltip="{content: 'Сервер ставит перед собой цель помочь новичкам, интересующимся D&D в Discord сегменте, <br/>а также стремится стать надежной базой для Discord-комьюнити системы D&D.', html: true}"
                     href="https://discord.gg/Vxu2Cu9mbM?partner=dnd5.club"
                     class="home__info_friend"
                     target="_blank"
-                    title="Сервер ставит перед собой цель помочь новичкам, интересующимся D&amp;D в Discord сегменте, а также стремится стать надежной базой для Discord-комьюнити системы D&amp;D."
                 >
                     <img
                         src="https://dnd5.club/resources/assets/partner/Empire_tavern.png"
@@ -183,10 +184,10 @@
                     <span>Empire Tavern</span>
                 </a>
                 <a
+                    v-tooltip="{content: 'Это клуб ролевых игр Великого Новгорода Студия «Ravenheart». <br />Если ты хочешь круто провести время, то ты пришел по адресу!', html: true}"
                     href="https://vk.com/ravenheart_studio?partner=dnd5.club"
                     class="home__info_friend"
                     target="_blank"
-                    title="Это клуб ролевых игр Великого Новгорода Студия «Ravenheart». Если ты хочешь круто провести время, то ты пришел по адресу!"
                 >
                     <img
                         src="https://dnd5.club/resources/assets/partner/ravenheart_studio.jpg"
@@ -196,10 +197,10 @@
                     <span>Студия «Ravenheart»</span>
                 </a>
                 <a
+                    v-tooltip="{content: 'Сообщество опытного мастера Andy по настольным и ролевым играм, <br />который хочет сделать ваш досуг максимально интересным и доступным.', html: true}"
                     href="https://vk.com/anykeyspb?partner=dnd5.club"
                     class="home__info_friend"
                     target="_blank"
-                    title="Сообщество опытного мастера Andy по настольным и ролевым играм, который хочет сделать ваш досуг максимально интересным и доступным."
                 >
                     <img
                         src="https://dnd5.club/resources/assets/partner/any_key.png"
@@ -209,10 +210,10 @@
                     <span>ANY KEY</span>
                 </a>
                 <a
+                    v-tooltip="{content: 'Random Rules это канал про настольные ролевые игры. <br />Любите проводить время с друзьями, играя в Dungeons & Dragons? Вам сюда!', html: true}"
                     href="https://vk.com/rrules?partner=dnd5.club"
                     class="home__info_friend"
                     target="_blank"
-                    title="Random Rules это канал про настольные ролевые игры. Любите проводить время с друзьями, играя в Dungeons &amp; Dragons? Вам сюда!"
                 >
                     <img
                         src="https://dnd5.club/resources/assets/partner/random_rules.jpg"
@@ -222,10 +223,10 @@
                     <span>Random Rules</span>
                 </a>
                 <a
+                    v-tooltip="{content: 'DiceHead собирает множество информации по Dungeons & Dragons, <br />выкладывает материалы для вдохновения и стремиться поддерживать сообщество НРИ в России.', html: true}"
                     href="https://vk.com/dicehead_dnd?partner=dnd5.club"
                     class="home__info_friend"
                     target="_blank"
-                    title="DiceHead собирает множество информации по Dungeons &amp; Dragons, выкладывает материалы для вдохновения и стремиться поддерживать сообщество НРИ в России."
                 >
                     <img
                         src="https://dnd5.club/resources/assets/partner/dicehead.jpg"
@@ -235,10 +236,10 @@
                     <span>DiceHead | D&amp;D</span>
                 </a>
                 <a
+                    v-tooltip="{content: 'Короткие авторские приключения для D&amp;D 5e и других систем.', html: true}"
                     href="https://vk.com/ngdnd?partner=dnd5.club"
                     class="home__info_friend"
                     target="_blank"
-                    title="Короткие авторские приключения для D&amp;D 5e и других систем."
                 >
                     <img
                         src="https://dnd5.club/resources/assets/partner/ngdnd.jpg"
@@ -430,8 +431,25 @@
             margin-left: 16px;
             color: var(--primary);
 
+            @include media-min($md) {
+                width: auto;
+                border-radius: 32px;
+                padding: 8px 16px;
+            }
+
             &_label {
+                @include css_anim();
+
                 display: none;
+                color: var(--text-color-title);
+                font-weight: 300;
+                font-size: 16px;
+                font-family: 'Open Sans', serif;
+                margin-left: 8px;
+
+                @include media-min($md) {
+                    display: inline-block;
+                }
             }
 
             &:hover {
@@ -440,6 +458,14 @@
                 color: var(--text-btn-color);
                 background-color: var(--primary-hover);
                 border-color: var(--primary-hover);
+
+                .home {
+                    &__store {
+                        &_label {
+                            color: var(--text-btn-color);
+                        }
+                    }
+                }
             }
         }
 
@@ -532,7 +558,7 @@
             }
 
             &_friend {
-                @include css_anim($time: .15s);
+                @include css_anim();
 
                 display: inline-flex;
                 align-items: center;
@@ -560,7 +586,7 @@
                 }
 
                 &:hover {
-                    @include css_anim($time: .15s);
+                    @include css_anim();
 
                     color: var(--text-btn-color);
                     background-color: var(--primary-active);

@@ -7,7 +7,7 @@ export const useUIStore = defineStore('UIStore', {
         theme: '',
         menu: {
             show: false,
-            minified: true,
+            minified: false,
             submenu: ''
         }
     }),

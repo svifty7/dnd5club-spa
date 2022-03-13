@@ -122,6 +122,7 @@
         margin-top: auto;
 
         @include media-min($md) {
+            flex-shrink: 0;
             width: 72px;
             height: 100%;
             margin-top: initial;
