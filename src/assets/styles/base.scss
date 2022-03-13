@@ -6,6 +6,21 @@
   outline: none;
   appearance: none;
   -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--primary);
+    border-radius: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    outline: none;
+  }
 }
 
 .hidden {
@@ -38,4 +53,42 @@ button {
   background-color: transparent;
   border: 0;
   cursor: pointer;
+}
+
+.become-discord-button,
+.become-patron-button {
+  @include css_anim($time: .15s);
+
+  padding: 8px 16px;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+
+  span {
+    margin-left: 8px;
+  }
+
+  &:hover {
+    @include css_anim($time: .15s);
+  }
+}
+
+.become-discord-button {
+  background-color: var(--discord-base);
+
+  &:hover {
+    color: var(--discord-hover-text);
+    background-color: #ffffff;
+  }
+}
+
+.become-patron-button {
+  background-color: var(--patreon-base);
+
+  &:hover {
+    color: var(--discord-hover-text);
+    background-color: #ffffff;
+  }
 }

@@ -31,7 +31,7 @@
     import { mapActions, mapState } from 'pinia/dist/pinia';
     import NavItemTheme from '@/components/navigation/NavItem/NavItemTheme';
     import { useUIStore } from '@/store/UIStore';
-    import { ROUTES } from '@/router';
+    import { ROUTES } from '@/router/routes.ts';
 
     export default {
         name: 'NavBar',
