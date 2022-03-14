@@ -177,7 +177,7 @@ export const ROUTES: IRoute[] = [
             leftMenu: true,
         }, {
             label: 'Дикая магия',
-            name: 'wildmagic',
+            name: 'wild-magic',
             path: '/wildmagic',
             component: '/ToolViews/WildMagic/WildMagicView.vue',
             leftMenu: true,
