@@ -454,7 +454,6 @@
                 color: var(--text-color-title);
                 font-weight: 300;
                 font-size: 16px;
-                font-family: 'Open Sans', serif;
                 margin-left: 8px;
 
                 @include media-min($md) {
@@ -537,8 +536,8 @@
             &_name {
                 font: {
                     weight: 300;
-                    family: 'Lora';
-                    size: calc(var(--h4-font-size) - 4px);
+                    family: 'Open Sans', serif;
+                    size: calc(var(--h4-font-size) - 6px);
                 };
                 line-height: 16px;
                 text-align: center;

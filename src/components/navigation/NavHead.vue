@@ -148,6 +148,11 @@
             width: 72px;
             height: 72px;
 
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+
             @include media-min($md) {
                 display: none;
             }

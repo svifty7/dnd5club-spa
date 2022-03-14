@@ -24,7 +24,7 @@
         width: 100%;
         height: 100%;
 
-         @include media-min($md) {
+        @include media-min($md) {
             flex-direction: row;
         }
 

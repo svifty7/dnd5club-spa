@@ -4,13 +4,12 @@ import {
     RouteRecordRaw
 } from 'vue-router';
 import { IRoute, ROUTES } from '@/router/routes';
-import Helpers from '@/common/utils/Helpers';
 
 const SPAPages = (): Array<RouteRecordRaw> => {
     const getRoutes = (routeList: IRoute[]): RouteRecordRaw[] => {
         const filtered: Array<RouteRecordRaw> = [];
         const isExternalLink = (path: string): boolean => path.startsWith('http');
-        const getPath = (route: IRoute) => {
+        const getPath = (route: IRoute): string => {
             if (!Array.isArray(route.children) || !route.children.length) {
                 if (!route.path) {
                     throw new Error(`router "${ route.label }"${ route.name ? `|"${ route.name }"` : '' } has no path`);
@@ -27,10 +26,11 @@ const SPAPages = (): Array<RouteRecordRaw> => {
 
             return route.children[0].path
         };
-        const getComponent = (name: string) => (): RouteComponent => {
-            const formattedName = `${Helpers.capitalizeFirstLetter(name)}View`;
-
-            return import(`@/views/${ formattedName }/${formattedName}.vue`)
+        const getComponent = (route: IRoute): RouteComponent => {
+            if (!route?.component) {
+                return import('@/views/HomeView.vue')
+            }
+            return import(`@/views${route.component}`);
         }
 
         for (let i = 0; i < routeList.length; i++) {
@@ -38,9 +38,7 @@ const SPAPages = (): Array<RouteRecordRaw> => {
 
             if (
                 !route?.name
-                || (!route?.path && (
-                    !Array.isArray(route.children) || !route.children.length
-                ))
+                || ((!route?.path || !route?.component) && (!Array.isArray(route.children) || !route.children.length))
                 || isExternalLink(getPath(route))
             ) {
                 continue;
@@ -49,7 +47,7 @@ const SPAPages = (): Array<RouteRecordRaw> => {
             const formatted: RouteRecordRaw = {
                 name: route.name,
                 path: getPath(route),
-                component: getComponent(route.name),
+                component: () => getComponent(route),
             }
 
             if (!!Array.isArray(route.children) && !!route.children.length) {
