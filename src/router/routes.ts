@@ -228,7 +228,7 @@ export const ROUTES: IRoute[] = [
     }, {
         label: '404',
         name: 'not-found',
-        path: '/(.*)',
+        path: '/:pathMatch(.*)*',
         component: '/NotFoundView.vue',
     }
 ];
