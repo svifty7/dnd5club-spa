@@ -7,8 +7,9 @@
         :to="{ name: 'classDetail', params: { className: classItem.name.url } }"
     >
         <div
-            v-masonry-tile
             v-bind="$attrs"
+            ref="classItem"
+            v-masonry-tile
             class="class-item"
             :class="{ 'router-link-active': isActive }"
         >
@@ -64,7 +65,7 @@
 
                 <div
                     v-if="hasArchetypes"
-                    :class="{ 'is-active': submenu.show }"
+                    :class="{ 'is-active': isOpenedArchetypes }"
                     class="class-item__arch-list"
                 >
                     <div class="class-item__arch-list_col">
@@ -178,7 +179,8 @@
             return {
                 submenu: {
                     show: false
-                }
+                },
+                resizeObserver: null,
             }
         },
         computed: {
@@ -207,6 +209,14 @@
             isOpenedArchetypes() {
                 this.updateGrid();
             }
+        },
+        mounted() {
+            this.resizeObserver = new ResizeObserver(this.updateGrid);
+
+            this.resizeObserver.observe(this.$refs.classItem);
+        },
+        beforeUnmount() {
+            this.resizeObserver.unobserve(this.$refs.classItem);
         },
         methods: {
             toggleArch() {
@@ -345,15 +355,29 @@
 
         &__arch {
             &-list {
-                padding: 0 16px 16px 82px;
+                padding: 0 16px 16px 16px;
                 display: none;
+                flex-direction: column;
+                grid-gap: 16px;
+
+                @include media-min($sm) {
+                    padding-left: 74px;
+                }
+
+                @include media-min($md) {
+                    padding-left: 16px;
+                }
+
+                @include media-min($lg) {
+                    padding-left: 74px;
+                }
+
+                @include media-min($xxl) {
+                    flex-direction: row;
+                }
 
                 &_col {
                     flex: 1;
-
-                    &:nth-child(n+2) {
-                        margin-left: 16px;
-                    }
                 }
 
                 &.is-active {
@@ -364,6 +388,17 @@
             &-type {
                 &:nth-child(n+2) {
                     margin-top: 16px;
+                }
+
+                &_items {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+
+                    @include media-min($sm) {
+                        min-width: 216px;
+                        max-width: 100%;
+                    }
                 }
 
                 &_name {

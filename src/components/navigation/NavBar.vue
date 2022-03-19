@@ -31,7 +31,7 @@
     import { mapActions, mapState } from 'pinia/dist/pinia';
     import NavItemTheme from '@/components/navigation/NavItem/NavItemTheme';
     import { useUIStore } from '@/store/UIStore';
-    import { IRoute, ROUTES } from '@/router/routes.ts';
+    import { ROUTES } from '@/router/routes.ts';
 
     export default {
         name: 'NavBar',
@@ -49,10 +49,6 @@
             ...mapState(useUIStore, {
                 menuConfig: 'getMenuConfig',
             }),
-
-            menuState() {
-                return this.menuConfig.show
-            },
 
             menuItems() {
                 const getRoutes = routeList => {
@@ -119,8 +115,11 @@
             }
         },
         watch: {
-            menuState(newValue) {
-                this.isMenuShow = newValue
+            menuConfig: {
+                deep: true,
+                handler(newValue) {
+                    this.isMenuShow = newValue.show
+                },
             }
         },
         mounted() {
