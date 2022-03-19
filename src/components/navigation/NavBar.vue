@@ -31,7 +31,7 @@
     import { mapActions, mapState } from 'pinia/dist/pinia';
     import NavItemTheme from '@/components/navigation/NavItem/NavItemTheme';
     import { useUIStore } from '@/store/UIStore';
-    import { ROUTES } from '@/router/routes.ts';
+    import { IRoute, ROUTES } from '@/router/routes.ts';
 
     export default {
         name: 'NavBar',
@@ -57,6 +57,25 @@
             menuItems() {
                 const getRoutes = routeList => {
                     const hasChildren = route => Array.isArray(route.children) && route.children.length;
+                    const getPath = route => {
+                        if (!Array.isArray(route.children) || !route.children.length) {
+                            if (!route.path) {
+                                throw new Error(`router "${ route.label }"${ route.name
+                                    ? `|"${ route.name }"`
+                                    : '' } has no path`);
+                            }
+
+                            return route.path
+                        }
+
+                        if (!route.children[0].path) {
+                            throw new Error(`router "${ route.children[0].label }"${ route.children[0].name
+                                ? `|"${ route.children[0].name }"`
+                                : '' } has no path`);
+                        }
+
+                        return route.children[0].path
+                    };
                     const filtered = [];
 
                     for (let i = 0; i < routeList.length; i++) {
@@ -70,7 +89,7 @@
                             continue;
                         }
 
-                        let formatted = {
+                        const formatted = {
                             name: route.name,
                             label: route.label,
                             icon: route.name,
@@ -78,17 +97,15 @@
                         }
 
                         if (hasChildren(route)) {
-                            delete formatted.path;
+                            const children = getRoutes(route.children);
 
-                            formatted = {
-                                ...formatted,
-                                children: getRoutes(route.children)
-                            }
+                            if (children.length) {
+                                formatted.children = getRoutes(route.children);
+                                formatted.path = getPath(formatted);
 
-                            formatted.path = formatted.children[0].path;
-
-                            if (route?.path) {
-                                formatted.children[0].path = route.path;
+                                if (route?.path) {
+                                    formatted.children[0].path = route.path;
+                                }
                             }
                         }
 

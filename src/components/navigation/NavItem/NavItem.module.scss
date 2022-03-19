@@ -214,7 +214,7 @@
       }
 
       &.is-opened {
-        &:not(.is-link-active) {
+        &:not(.router-link-active) {
           background-color: var(--bg-sub-menu);
         }
 
@@ -227,7 +227,7 @@
     }
   }
 
-  &.is-link-active {
+  &.router-link-active {
     background-color: var(--primary-hover);
 
     .nav-item {

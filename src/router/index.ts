@@ -46,12 +46,16 @@ const SPAPages = (): Array<RouteRecordRaw> => {
 
             const formatted: RouteRecordRaw = {
                 name: route.name,
-                path: getPath(route),
+                path: route.path || getPath(route),
                 component: () => getComponent(route),
             }
 
             if (!!Array.isArray(route.children) && !!route.children.length) {
-                formatted.children = getRoutes(route.children);
+                const children = getRoutes(route.children);
+
+                if (children.length) {
+                    formatted.children = getRoutes(route.children);
+                }
             }
 
             filtered.push(formatted)

@@ -11,7 +11,7 @@
         <div
             class="nav-item"
             v-bind="$attrs"
-            :class="{'is-link-active': isActive, ...classList}"
+            :class="{'router-link-active': isActive, ...classList}"
         >
             <a
                 :href="href"

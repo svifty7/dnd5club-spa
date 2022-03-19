@@ -26,6 +26,18 @@ export const ROUTES: IRoute[] = [
             component: '/CharacterViews/Classes/ClassesView.vue',
             leftMenu: true,
             homePage: true,
+            children: [{
+                label: 'Класс',
+                name: 'classDetail',
+                path: '/classes/:className',
+                component: '/CharacterViews/Classes/ClassDetail.vue',
+                children: [{
+                    label: '',
+                    name: 'archetype',
+                    path: '/classes/:className/:archetype',
+                    component: '/CharacterViews/Classes/ClassDetail.vue',
+                }]
+            }]
         }, {
             label: 'Расы',
             name: 'races',
