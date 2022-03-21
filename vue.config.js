@@ -1,6 +1,9 @@
 const path = require('path');
 
 module.exports = {
+    publicPath: process.env.NODE_ENV === 'production'
+        ? '/dnd5club-spa/'
+        : '/',
     filenameHashing: true,
     runtimeCompiler: true,
     productionSourceMap: false,
