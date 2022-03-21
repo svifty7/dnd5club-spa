@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkdnd5club_spa"]=self["webpackChunkdnd5club_spa"]||[]).push([[929],{8929:function(n,e,r){r.r(e),r.d(e,{default:function(){return i}});var a=r(9199);const t={class:"tavern"};function u(n,e,r,u,c,s){return(0,a.wg)(),(0,a.iD)("div",t," tavern ")}var c={name:"TavernView"},s=r(89);const d=(0,s.Z)(c,[["render",u]]);var i=d}}]);
