@@ -211,9 +211,13 @@
             }
         },
         mounted() {
-            this.resizeObserver = new ResizeObserver(this.updateGrid);
+            this.$nextTick(() => {
+                this.resizeObserver = new ResizeObserver(this.updateGrid);
 
-            this.resizeObserver.observe(this.$refs.classItem);
+                this.resizeObserver.observe(this.$refs.classItem);
+
+                this.updateGrid()
+            });
         },
         beforeUnmount() {
             this.resizeObserver.unobserve(this.$refs.classItem);
@@ -296,6 +300,8 @@
         }
 
         &__name {
+            padding-right: 8px;
+
             &--rus {
                 display: inline;
                 font-size: calc(var(--h5-font-size) + 2px);
@@ -327,7 +333,6 @@
         &__toggle {
             color: var(--primary);
             width: 32px;
-            height: 82px;
             padding: 0;
             flex-shrink: 0;
             display: flex;
@@ -335,8 +340,10 @@
             justify-content: center;
             background-color: transparent;
 
-            &:hover {
-                background-color: var(--hover);
+            @include media-min($md) {
+                &:hover {
+                    background-color: var(--hover);
+                }
             }
 
             svg {
@@ -358,7 +365,7 @@
                 padding: 0 16px 16px 16px;
                 display: none;
                 flex-direction: column;
-                grid-gap: 16px;
+                gap: 16px;
 
                 @include media-min($sm) {
                     padding-left: 74px;
@@ -404,7 +411,7 @@
                 &_name {
                     font: {
                         size: calc(var(--h5-font-size) + 2px);
-                        family: 'Lora', serif;
+                        family: Lora, serif;
                         weight: 300;
                     };
                     color: var(--text-color-title);
@@ -426,8 +433,10 @@
                     font-size: calc(var(--main-font-size) - 2px);
                 }
 
-                &:hover {
-                    background-color: var(--hover);
+                @include media-min($md) {
+                    &:hover {
+                        background-color: var(--hover);
+                    }
                 }
 
                 &.router-link-active {
@@ -436,10 +445,12 @@
             }
         }
 
-        &:hover {
-            .class-item {
-                &__content {
-                    background-color: var(--bg-sub-menu)
+        @include media-min($md) {
+            &:hover {
+                .class-item {
+                    &__content {
+                        background-color: var(--bg-sub-menu)
+                    }
                 }
             }
         }

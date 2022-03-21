@@ -33,7 +33,7 @@
 
 body {
   display: flex;
-  font-family: 'Open Sans', serif;
+  font-family: Open Sans, serif;
   background-color: var(--bg-main);
   font-size: var(--main-font-size);
   outline: none;
@@ -75,25 +75,36 @@ button {
     margin-left: 8px;
   }
 
-  &:hover {
-    @include css_anim();
-
-    color: var(--text-btn-color);
+  @include media-min($md) {
+    &:hover {
+      color: var(--text-btn-color);
+    }
   }
 }
 
 .become-discord-button {
   background-color: var(--discord-base);
 
-  &:hover {
-    background-color: var(--discord-hover);
+  @include media-min($md) {
+    &:hover {
+      background-color: var(--discord-hover);
+    }
   }
 }
 
 .become-patron-button {
   background-color: var(--patreon-base);
 
-  &:hover {
-    background-color: var(--patreon-hover);
+  @include media-min($md) {
+    &:hover {
+      background-color: var(--patreon-hover);
+    }
+  }
+}
+
+input {
+  &[type="text"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

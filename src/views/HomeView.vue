@@ -2,23 +2,12 @@
     <div class="home">
         <div class="home__header">
             <div class="home__search">
-                <button
-                    type="button"
-                    class="home__search_btn--search"
-                >
-                    <svg-icon
-                        icon-name="search"
-                        :fill-enable="true"
-                        :stroke-enable="false"
-                    />
-                </button>
+                <label class="home__search_input">
+                    <span class="home__search_btn--search">
+                        <svg-icon icon-name="search"/>
+                    </span>
 
-                <label
-                    for="search"
-                    class="home__search_input"
-                >
                     <input
-                        id="search"
                         v-model="search"
                         type="text"
                         name="search"
@@ -29,7 +18,7 @@
                 </label>
 
                 <button
-                    v-if="!!search.length"
+                    v-if="!!search"
                     type="button"
                     class="home__search_btn--reset"
                     @click.left.exact.prevent="search = ''"
@@ -52,7 +41,7 @@
 
         <div class="home__links">
             <router-link
-                v-for="(link, index) in navItems"
+                v-for="(link, index) in computedMenuItems"
                 :key="index"
                 :to="{name: link.name}"
                 class="home__link"
@@ -261,7 +250,8 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { ROUTES } from '@/router/routes.ts';
+    import { mapActions, mapState } from 'pinia/dist/pinia';
+    import { useHomeStore } from '@/store/HomeStore/index.ts';
 
     export default {
         name: 'HomeView',
@@ -272,49 +262,9 @@
             }
         },
         computed: {
-            navItems() {
-                const getRoutes = routeList => {
-                    const hasChildren = route => Array.isArray(route.children) && route.children.length;
-
-                    let filtered = [];
-
-                    for (let i = 0; i < routeList.length; i++) {
-                        const route = routeList[i];
-
-                        if (
-                            !route?.label
-                            || !route?.name
-                            || (!route?.path && !hasChildren(route))
-                        ) {
-                            continue;
-                        }
-
-                        const formatted = {
-                            name: route.name,
-                            label: route.label,
-                            icon: route.name,
-                            path: route.path
-                        }
-
-                        if (route.homePage) {
-                            filtered.push(formatted);
-                        }
-
-                        if (hasChildren(route)) {
-                            const children = getRoutes(route.children);
-
-                            filtered = [
-                                ...filtered,
-                                ...children
-                            ]
-                        }
-                    }
-
-                    return filtered;
-                }
-
-                return getRoutes(ROUTES);
-            }
+            ...mapState(useHomeStore, {
+                computedMenuItems: 'computedMenuItems',
+            })
         },
     }
 </script>
@@ -357,14 +307,13 @@
         }
 
         &__search {
-            width: 100%;
+            flex: 1;
             border: 1px solid var(--border);
             border-radius: 50px;
             overflow: hidden;
             height: 48px;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
             background-color: var(--bg-secondary);
 
             @include media-min($md) {
@@ -374,44 +323,54 @@
             &_btn {
                 &--search,
                 &--reset {
+                    @include css_anim();
+
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    height: 100%;
+                    height: 46px;
                     width: 46px;
                     padding: 0;
                     color: var(--text-color-title);
                     flex-shrink: 0;
+                    background-color: transparent;
                 }
 
                 &--search {
                     svg {
-                        width: 20px;
-                        height: 20px;
+                        width: 24px;
+                        height: 24px;
                     }
                 }
 
                 &--reset {
+                    @include media-min($md) {
+                        &:hover {
+                            color: var(--primary);
+                        }
+                    }
+
                     svg {
-                        width: 12px;
-                        height: 12px;
+                        width: 24px;
+                        height: 24px;
                     }
                 }
             }
 
             &_input {
-                width: 100%;
+                flex: 1;
                 height: 100%;
+                display: flex;
+                cursor: text;
+                align-items: center;
 
                 input {
                     width: 100%;
                     height: 100%;
                     border: 0;
                     background-color: transparent;
-                    padding: 0;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
                     color: var(--text-color);
+                    padding: 0;
                     font: {
                         weight: 300;
                         size: 16px;
@@ -461,17 +420,19 @@
                 }
             }
 
-            &:hover {
-                @include css_anim();
+            @include media-min($md) {
+                &:hover {
+                    @include css_anim();
 
-                color: var(--text-btn-color);
-                background-color: var(--primary-hover);
-                border-color: var(--primary-hover);
+                    color: var(--text-btn-color);
+                    background-color: var(--primary-hover);
+                    border-color: var(--primary-hover);
 
-                .home {
-                    &__store {
-                        &_label {
-                            color: var(--text-btn-color);
+                    .home {
+                        &__store {
+                            &_label {
+                                color: var(--text-btn-color);
+                            }
                         }
                     }
                 }
@@ -536,7 +497,7 @@
             &_name {
                 font: {
                     weight: 300;
-                    family: 'Open Sans', serif;
+                    family: Open Sans, serif;
                     size: calc(var(--h4-font-size) - 6px);
                 };
                 line-height: 16px;
@@ -544,15 +505,15 @@
                 margin-top: 8px;
             }
 
-            &:hover {
-                @include css_anim();
+            @include media-min($md) {
+                &:hover {
+                    color: var(--text-color-active);
+                    background-color: var(--bg-sub-menu);
 
-                color: var(--text-color-active);
-                background-color: var(--bg-sub-menu);
-
-                .home {
-                    &__link {
-                        &_icon {
+                    .home {
+                        &__link {
+                            &_icon {
+                            }
                         }
                     }
                 }
@@ -599,11 +560,13 @@
                     }
                 }
 
-                &:hover {
-                    @include css_anim();
+                @include media-min($md) {
+                    &:hover {
+                        @include css_anim();
 
-                    color: var(--text-btn-color);
-                    background-color: var(--primary-active);
+                        color: var(--text-btn-color);
+                        background-color: var(--primary-active);
+                    }
                 }
             }
         }

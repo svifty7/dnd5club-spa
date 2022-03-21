@@ -11,9 +11,9 @@
         >
             <nav class="nav-bar__nav-list">
                 <nav-item
-                    v-for="(item, index) in menuItems"
+                    v-for="(item, index) in menuConfig.leftItems"
                     :key="index"
-                    :to="item.path"
+                    :to="{ name: item.name }"
                     :nav-item="item"
                 />
             </nav>
@@ -31,7 +31,6 @@
     import { mapActions, mapState } from 'pinia/dist/pinia';
     import NavItemTheme from '@/components/navigation/NavItem/NavItemTheme';
     import { useUIStore } from '@/store/UIStore';
-    import { ROUTES } from '@/router/routes.ts';
 
     export default {
         name: 'NavBar',
@@ -49,70 +48,6 @@
             ...mapState(useUIStore, {
                 menuConfig: 'getMenuConfig',
             }),
-
-            menuItems() {
-                const getRoutes = routeList => {
-                    const hasChildren = route => Array.isArray(route.children) && route.children.length;
-                    const getPath = route => {
-                        if (!Array.isArray(route.children) || !route.children.length) {
-                            if (!route.path) {
-                                throw new Error(`router "${ route.label }"${ route.name
-                                    ? `|"${ route.name }"`
-                                    : '' } has no path`);
-                            }
-
-                            return route.path
-                        }
-
-                        if (!route.children[0].path) {
-                            throw new Error(`router "${ route.children[0].label }"${ route.children[0].name
-                                ? `|"${ route.children[0].name }"`
-                                : '' } has no path`);
-                        }
-
-                        return route.children[0].path
-                    };
-                    const filtered = [];
-
-                    for (let i = 0; i < routeList.length; i++) {
-                        const route = routeList[i];
-
-                        if (
-                            !route?.leftMenu
-                            || !route?.label
-                            || (!route?.path && !hasChildren(route))
-                        ) {
-                            continue;
-                        }
-
-                        const formatted = {
-                            name: route.name,
-                            label: route.label,
-                            icon: route.name,
-                            path: route.path
-                        }
-
-                        if (hasChildren(route)) {
-                            const children = getRoutes(route.children);
-
-                            if (children.length) {
-                                formatted.children = getRoutes(route.children);
-                                formatted.path = getPath(formatted);
-
-                                if (route?.path) {
-                                    formatted.children[0].path = route.path;
-                                }
-                            }
-                        }
-
-                        filtered.push(formatted)
-                    }
-
-                    return filtered;
-                }
-
-                return getRoutes(ROUTES);
-            }
         },
         watch: {
             menuConfig: {
@@ -120,6 +55,15 @@
                 handler(newValue) {
                     this.isMenuShow = newValue.show
                 },
+            }
+        },
+        async beforeCreate() {
+            const uiStore = useUIStore();
+
+            try {
+                await uiStore.getLeftMenuItems();
+            } catch (e) {
+                throw new Error(e)
             }
         },
         mounted() {

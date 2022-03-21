@@ -46,8 +46,10 @@ $xxl: 1400px;
 @mixin css_anim($time: .15s, $item: all, $style: ease-in-out) {
   transition: $item $style $time;
 
-  &:hover {
-    transition: $item $style $time;
+  @include media-min($md) {
+    &:hover {
+      transition: $item $style $time;
+    }
   }
 }
 

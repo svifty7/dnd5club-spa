@@ -15,7 +15,8 @@
     "pinia": "^2.0.11",
     "vue": "^3.2.13",
     "vue-masonry": "^0.14.1",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "vue3-perfect-scrollbar": "^1.6.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.1",

@@ -1,6 +1,6 @@
 <template>
     <router-link
-        v-if="!isExternalLink"
+        v-if="!isExternalLink(navItem)"
         v-slot="{href, navigate, isActive}"
         v-bind="$props"
         :to="{ name: navItem.name }"
@@ -19,7 +19,7 @@
                 @click.left.prevent.exact="handleTriggerClick(navigate)"
             >
                 <div class="nav-item__icon">
-                    <svg-icon :icon-name="`left-menu-${navItem.icon}`"/>
+                    <svg-icon :icon-name="`left-menu-${navItem.name}`"/>
                 </div>
 
                 <div class="nav-item__name">
@@ -49,7 +49,7 @@
                     class="nav-item__sub-item--wrapper"
                 >
                     <router-link
-                        v-if="isRouterLink(child)"
+                        v-if="!isExternalLink(child)"
                         :to="{name: child.name}"
                         class="nav-item__sub-item"
                     >
@@ -59,7 +59,7 @@
                     <a
                         v-else
                         target="_blank"
-                        :href="child.path"
+                        :href="child.url"
                         class="nav-item__sub-item"
                     >
                         {{ child.label }}
@@ -81,7 +81,7 @@
             @click.left.exact.prevent="toggleSubmenu(navItem.label)"
         >
             <div class="nav-item__icon">
-                <svg-icon :icon-name="`left-menu-${navItem.icon}`"/>
+                <svg-icon :icon-name="`left-menu-${navItem.name}`"/>
             </div>
 
             <div class="nav-item__name">
@@ -109,7 +109,7 @@
             >
                 <a
                     target="_blank"
-                    :href="child.path"
+                    :href="child.url"
                     class="nav-item__sub-item"
                 >
                     {{ child.label }}
@@ -135,7 +135,6 @@
                 default: () => ({}),
                 required: true
             },
-            ...RouterLink.props,
         },
         data() {
             return {
@@ -155,15 +154,15 @@
                 }
             },
 
-            isExternalLink() {
-                return typeof this.to === 'string' && this.to.startsWith('http')
-            },
-
             hasChildren() {
                 return 'children' in this.navItem
                     && Array.isArray(this.navItem.children)
                     && !!this.navItem.children.length
-            }
+            },
+
+            isParentExternalLink() {
+                return !this.navItem?.url?.startsWith('http');
+            },
         },
         methods: {
             ...mapActions(useUIStore, {
@@ -192,8 +191,8 @@
                 this.toggleSubmenu(this.navItem.label);
             },
 
-            isRouterLink(el) {
-                return !el?.path?.startsWith('http');
+            isExternalLink(el) {
+                return !!el?.external;
             },
         },
     }

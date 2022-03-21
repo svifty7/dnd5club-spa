@@ -13,9 +13,9 @@
   --h2-line-height: calc(var(--h2-font-size) + 10px);
   --h3-line-height: calc(var(--h3-font-size) + 6px);
   --h4-line-height: calc(var(--h4-font-size) + 10px);
-  --h5-line-height: calc(var(--h5-font-size) + 5px);
+  --h5-line-height: calc(var(--h5-font-size) + 6px);
 
-   @include media-min($lg) {
+  @include media-min($lg) {
     --main-font-size: 14px;
     --h1-font-size: 32px;
     --h2-font-size: 28px;
@@ -45,7 +45,7 @@ h3 {
   line-height: var(--h3-line-height);
   margin: 0;
   color: var(--text-color-title);
-  font-family: 'Lora';
+  font-family: Lora;
 }
 
 h4 {
@@ -53,8 +53,7 @@ h4 {
   font-weight: 300;
   margin: 0;
   color: var(--text-color-title);
-  position: relative;
-  font-family: 'Lora';
+  font-family: Lora;
 }
 
 h5 {
@@ -80,8 +79,10 @@ a {
   font-weight: 400;
 }
 
-a:hover {
-  color: var(--link-color-hover);
+@include media-min($md) {
+  a:hover {
+    color: var(--link-color-hover);
+  }
 }
 
 ul {
@@ -136,7 +137,7 @@ summary.header_separator + .caption_text {
 }
 
 blockquote {
-  font-family: 'Neucha', cursive;
+  font-family: Neucha, cursive;
   padding: 16px 16px 16px 16px;
   background-color: var(--bg-blockquote);
   border-radius: 16px;
@@ -207,7 +208,7 @@ details > summary.h4 {
   margin: 0 0 4px 0;
   color: var(--text-color-title);
   position: relative;
-  font-family: 'Lora';
+  font-family: Lora;
   cursor: pointer;
   background: var(--bg-details-title);
   border-radius: 8px;
@@ -268,9 +269,11 @@ summary.h5 {
   cursor: pointer;
 }
 
-summary.h4:hover,
-summary.h5:hover {
-  color: var(--text-color);
+@include media-min($md) {
+  summary.h4:hover,
+  summary.h5:hover {
+    color: var(--text-color);
+  }
 }
 
 h4.separator_card {
@@ -432,8 +435,10 @@ table.dnd5_table {
   border-bottom: 1px solid;
 }
 
-table tbody tr:hover {
-  background-color: var(--hover);
+@include media-min($md) {
+  table tbody tr:hover {
+    background-color: var(--hover);
+  }
 }
 
 table.dataTable tr.dtrg-group td {
