@@ -123,7 +123,6 @@
     import SvgIcon from '@/components/UI/SvgIcon';
     import { mapActions, mapState } from 'pinia/dist/pinia';
     import { useUIStore } from '@/store/UIStore';
-    import { RouterLink } from 'vue-router';
 
     export default {
         name: 'NavItem',

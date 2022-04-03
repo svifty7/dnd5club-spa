@@ -134,20 +134,20 @@ export const useUIStore = defineStore('UIStore', {
                             name: 'magic-items',
                         }]
                     }, {
-                        label: 'Боги',
-                        name: 'gods',
+                        label: 'Ширма',
+                        name: 'screens',
                     }, {
-                        label: 'Мастерская',
-                        name: 'workshop',
+                        label: 'База знаний',
+                        name: 'wiki',
                         children: [{
-                            label: 'Ширма',
-                            name: 'screens',
-                        }, {
-                            label: 'Состояния и болезни',
-                            name: 'conditions',
+                            label: 'Боги',
+                            name: 'gods',
                         }, {
                             label: 'Правила и термины',
-                            name: 'rules',
+                            name: 'rules'
+                        }, {
+                            label: 'Источники',
+                            name: 'books'
                         }]
                     }, {
                         label: 'Инструменты',
@@ -170,9 +170,6 @@ export const useUIStore = defineStore('UIStore', {
                         }, {
                             label: 'Безумие',
                             name: 'madness',
-                        }, {
-                            label: 'Источники',
-                            name: 'books',
                         }]
                     }, {
                         label: 'Информация',
@@ -186,6 +183,10 @@ export const useUIStore = defineStore('UIStore', {
                             label: 'Мы на Patreon',
                             url: 'https://www.patreon.com/dnd5club',
                             external: true,
+                        }, {
+                            label: 'Наш Telegram Bot',
+                            url: 'https://t.me/dnd5club_bot',
+                            external: true
                         }, {
                             label: 'Мастер на Boosty',
                             url: 'https://boosty.to/dnd5eclub',

@@ -261,6 +261,7 @@
         color: var(--text-btn-color);
         opacity: .6;
 
+        &.router-link-active,
         &.router-link-exact-active {
           color: var(--text-btn-color);
           background-color: var(--hover);

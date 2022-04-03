@@ -1,12 +1,12 @@
 <template>
-    <div class="conditions">
-        conditions
+    <div class="wiki-layout">
+        <router-view/>
     </div>
 </template>
 
 <script>
     export default {
-        name: 'ConditionsView'
+        name: 'WikiLayout'
     }
 </script>
 

@@ -3,7 +3,6 @@ import {
     createWebHistory,
 } from 'vue-router';
 import { useHomeStore } from '@/store/HomeStore';
-import { useUIStore } from '@/store/UIStore';
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -23,7 +22,8 @@ const router = createRouter({
             }
         }, {
             name: 'character',
-            path: '/classes',
+            path: '/character',
+            redirect: '/classes',
             component: () => import('@/views/CharacterViews/CharacterLayout.vue'),
             children: [{
                 name: 'classes',
@@ -62,7 +62,8 @@ const router = createRouter({
             component: () => import('@/views/SpellViews/Spells/SpellsView.vue'),
         }, {
             name: 'inventory',
-            path: '/weapons',
+            path: '/inventory',
+            redirect: '/weapons',
             component: () => import('@/views/InventoryViews/InventoryLayout.vue'),
             children: [{
                 name: 'weapons',
@@ -83,7 +84,8 @@ const router = createRouter({
             component: () => import('@/views/CreatureViews/Creatures/CreaturesView.vue'),
         }, {
             name: 'treasure',
-            path: '/treasures',
+            path: '/treasure',
+            redirect: '/treasures',
             component: () => import('@/views/TreasureViews/TreasureLayout.vue'),
             children: [{
                 name: 'treasures',
@@ -95,29 +97,30 @@ const router = createRouter({
                 component: () => import('@/views/TreasureViews/MagicItems/MagicItemsView.vue'),
             }]
         }, {
-            name: 'gods',
-            path: '/gods',
-            component: () => import('@/views/GodViews/Gods/GodsView.vue'),
-        }, {
-            name: 'workshop',
+            name: 'screens',
             path: '/screens',
-            component: () => import('@/views/WorkshopViews/WorkshopLayout.vue'),
+            component: () => import('@/views/ScreenViews/Screens/ScreensView.vue'),
+        }, {
+            name: 'wiki',
+            path: '/wiki',
+            component: () => import('@/views/WikiViews/WikiLayout.vue'),
             children: [{
-                name: 'screens',
-                path: '/screens',
-                component: () => import('@/views/WorkshopViews/Screens/ScreensView.vue'),
-            }, {
-                name: 'conditions',
-                path: '/conditions',
-                component: () => import('@/views/WorkshopViews/Conditions/ConditionsView.vue'),
+                name: 'gods',
+                path: '/gods',
+                component: () => import('@/views/WikiViews/Gods/GodsView.vue'),
             }, {
                 name: 'rules',
                 path: '/rules',
-                component: () => import('@/views/WorkshopViews/Rules/RulesView.vue'),
+                component: () => import('@/views/WikiViews/Rules/RulesView.vue'),
+            }, {
+                name: 'books',
+                path: '/books',
+                component: () => import('@/views/WikiViews/Books/BooksView.vue'),
             }]
         }, {
             name: 'tools',
-            path: '/trader',
+            path: '/tools',
+            redirect: '/trader',
             component: () => import('@/views/ToolViews/ToolLayout.vue'),
             children: [{
                 name: 'trader',
@@ -143,10 +146,6 @@ const router = createRouter({
                 name: 'madness',
                 path: '/madness',
                 component: () => import('@/views/ToolViews/Madness/MadnessView.vue'),
-            }, {
-                name: 'books',
-                path: '/books',
-                component: () => import('@/views/ToolViews/Books/BooksView.vue'),
             }]
         }, {
             name: 'login',
