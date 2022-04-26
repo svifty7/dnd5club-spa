@@ -182,6 +182,8 @@ module.exports = {
             },
             plugins: ['vue', '@typescript-eslint'],
             rules: {
+                'no-shadow': 'off',
+                '@typescript-eslint/no-shadow': ['error'],
                 '@typescript-eslint/no-explicit-any': [
                     0
                 ],

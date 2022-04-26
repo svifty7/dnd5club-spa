@@ -76,16 +76,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background-color: var(--hover);
         position: relative;
         width: 100%;
         height: 100%;
-        border-top: 1px solid var(--border);
 
         @include media-min($md) {
             height: 72px;
             border-top: 0;
-            border-bottom: 1px solid var(--border);
         }
 
         > * {
@@ -118,6 +115,8 @@
         }
 
         &__minify {
+            @include css_anim($item: background-color);
+
             width: 24px;
             height: 24px;
             display: none;
@@ -126,13 +125,19 @@
             border-radius: 50%;
             border: 1px solid var(--border);
             position: absolute;
-            right: -12px;
+            right: 24px;
             background-color: var(--bg-main);
             color: var(--primary);
 
             svg {
                 width: 24px;
                 height: 24px;
+            }
+
+            @include media-min($md) {
+                &:hover {
+                    background-color: var(--hover);
+                }
             }
 
             @include media-min($xl) {
@@ -162,6 +167,7 @@
             .nav-head {
                 &__minify {
                     transform: rotate(180deg);
+                    right: -16px;
                 }
             }
         }

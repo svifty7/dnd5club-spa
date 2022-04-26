@@ -36,12 +36,10 @@
   --discord-hover: #3c48cc;
   --patreon-base: #FF424D;
   --patreon-hover: #c52a3a;
-
-  // TODO: Убрать абсолютные пути на картинки
-  /********* IMG BG *********/
-  --bg-img-main: url(https://dnd5.club/resources/assets/style/dark/test.webp);
-  --bg-img-bestiary-forest: url(https://dnd5.club/resources/assets/style/dark/forest.webp);
-  --bg-img-bard: url(https://dnd5.club/resources/assets/style/dark/bard.webp);
+  --vk-base: #1179FC;
+  --vk-hover: #0765d8;
+  --boosty-base: #EF5C34;
+  --boosty-hover: #d45124;
 
   --common: #fff;
   --uncommon: #8aff91;
@@ -50,12 +48,10 @@
   --legendary: #f6ff00;
   --artifact: #ff8900;
 
-  // TODO: Убрать абсолютные пути на картинки
   /********* IMG BG *********/
-  --bg-title-img:url(https://dnd5.club/resources/assets/style/dark/bg_title.png);
-  --bg-title-img-2:url(https://dnd5.club/resources/assets/style/dark/bg_title_2.png);
-
-  // TODO: Убрать абсолютные пути на картинки
-  /********* Logo *********/
-  --icon-logo-menu: url(https://dnd5.club/resources/assets/icon/dark/logo.svg);
+  --bg-img-main: url('~@/assets/img/dark/bg-main.webp');
+  --bg-img-bestiary-forest: url('~@/assets/img/dark/bg-forest.webp');
+  --bg-img-bard: url('~@/assets/img/dark/bg-bard.webp');
+  --bg-title-img:url('~@/assets/img/dark/bg-title.png');
+  --bg-title-img-2:url('~@/assets/img/dark/bg-title-2.png');
 }

@@ -19,11 +19,17 @@
         },
         mounted() {
             this.setTheme();
+
+            document.documentElement.style.setProperty('--max-vh', `${ window.innerHeight }px`);
+
+            window.addEventListener('resize', () => {
+                document.documentElement.style.setProperty('--max-vh', `${ window.innerHeight }px`);
+            });
         },
         methods: {
             ...mapActions(useUIStore, {
                 setTheme: 'setTheme'
-            })
+            }),
         }
     };
 </script>

@@ -1,12 +1,9 @@
-// Fonts
-@import "fonts";
-
 :root {
   --main-font-size: 14px;
   --h1-font-size: 32px;
   --h2-font-size: 28px;
   --h3-font-size: 26px;
-  --h4-font-size: 22px;
+  --h4-font-size: 20px;
   --h5-font-size: 14px;
   --main-line-height: calc(var(--main-font-size) + 8px);
   --h1-line-height: calc(var(--h1-font-size) + 10px);
@@ -17,10 +14,10 @@
 
   @include media-min($lg) {
     --main-font-size: 14px;
-    --h1-font-size: 32px;
+    --h1-font-size: 42px;
     --h2-font-size: 28px;
     --h3-font-size: 26px;
-    --h4-font-size: 20px;
+    --h4-font-size: 22px;
     --h5-font-size: 14px;
   }
 }
@@ -45,7 +42,7 @@ h3 {
   line-height: var(--h3-line-height);
   margin: 0;
   color: var(--text-color-title);
-  font-family: Lora;
+  font-family: "Lora", serif;
 }
 
 h4 {
@@ -53,7 +50,7 @@ h4 {
   font-weight: 300;
   margin: 0;
   color: var(--text-color-title);
-  font-family: Lora;
+  font-family: "Lora", serif;
 }
 
 h5 {
@@ -137,7 +134,7 @@ summary.header_separator + .caption_text {
 }
 
 blockquote {
-  font-family: Neucha, cursive;
+  font-family: "Neucha", cursive;
   padding: 16px 16px 16px 16px;
   background-color: var(--bg-blockquote);
   border-radius: 16px;
@@ -208,7 +205,7 @@ details > summary.h4 {
   margin: 0 0 4px 0;
   color: var(--text-color-title);
   position: relative;
-  font-family: Lora;
+  font-family: "Lora", serif;
   cursor: pointer;
   background: var(--bg-details-title);
   border-radius: 8px;
@@ -376,7 +373,7 @@ table {
   border-radius: 0;
   border: 1px solid var(--border);
   width: 100% !important;
-  overflow: scroll;
+  overflow: auto;
   margin-bottom: 16px;
 }
 

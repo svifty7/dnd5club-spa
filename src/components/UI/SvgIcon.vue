@@ -18,7 +18,7 @@
         name: 'SvgIcon',
         props: {
             iconName: {
-                type: String,
+                type: [String, Function],
                 required: true,
             },
             strokeEnable: {

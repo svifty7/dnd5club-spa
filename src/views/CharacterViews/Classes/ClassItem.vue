@@ -1,10 +1,9 @@
 <template>
     <router-link
-        v-if="typeof classItem.name.url !== 'undefined'"
         v-slot="{href, navigate, isActive}"
         v-bind="$props"
         custom
-        :to="{ name: 'classDetail', params: { className: classItem.name.url } }"
+        :to="{ path: classItem.name.url }"
     >
         <div
             v-bind="$attrs"
@@ -20,12 +19,9 @@
                         class="class-item__link"
                         @click.left.prevent.exact="navigate()"
                     >
-                        <!-- eslint-disable vue/no-v-html -->
-                        <span
-                            class="class-item__icon"
-                            v-html="classItem.svg"
-                        />
-                        <!-- eslint-enable vue/no-v-html -->
+                        <span class="class-item__icon">
+                            <svg-icon :icon-name="getSVGName"/>
+                        </span>
 
                         <span class="class-item__body">
                             <span class="class-item__body_row">
@@ -39,8 +35,11 @@
                                     </span>
                                 </span>
 
-                                <span class="class-item__book">
-                                    {{ classItem.book }}
+                                <span
+                                    v-tooltip="{ content: classItem.source.name }"
+                                    class="class-item__book"
+                                >
+                                    {{ classItem.source.shortName }}
                                 </span>
                             </span>
 
@@ -53,7 +52,7 @@
                     </a>
 
                     <button
-                        v-if="hasArchetypes"
+                        v-if="!!classItem?.archetypes?.length"
                         type="button"
                         class="class-item__toggle"
                         :class="{ 'is-active': submenu.show }"
@@ -64,91 +63,35 @@
                 </div>
 
                 <div
-                    v-if="hasArchetypes"
+                    v-if="!!classItem?.archetypes?.length"
                     :class="{ 'is-active': isOpenedArchetypes }"
                     class="class-item__arch-list"
                 >
-                    <div class="class-item__arch-list_col">
-                        <div
-                            v-if="classItem?.archetypes?.main?.list?.length"
-                            class="class-item__arch-type"
-                        >
-                            <div class="class-item__arch-type_name">
-                                {{ classItem.archetypes.main.name }}
-                            </div>
-
-                            <div class="class-item__arch-type_items">
-                                <router-link
-                                    v-for="(arch, archKey) in classItem.archetypes.main.list"
-                                    :key="archKey"
-                                    :to="{ name: 'archetype', params: {
-                                        className: classItem.name.url,
-                                        archetype: arch.name.url
-                                    } }"
-                                    class="class-item__arch-item"
-                                >
-                                    <span class="class-item__arch-item_name">{{ arch.name.rus }}</span>
-
-                                    <span class="class-item__arch-item_book">
-                                        {{ `${ arch.source } / ${ arch.name.eng }` }}
-                                    </span>
-                                </router-link>
-                            </div>
-                        </div>
-
-                        <div
-                            v-if="classItem?.archetypes?.settings?.list?.length"
-                            class="class-item__arch-type"
-                        >
-                            <div class="class-item__arch-type_name">
-                                {{ classItem.archetypes.settings.name }}
-                            </div>
-
-                            <div class="class-item__arch-type_items">
-                                <router-link
-                                    v-for="(arch, archKey) in classItem.archetypes.settings.list"
-                                    :key="archKey"
-                                    :to="{ name: 'archetype', params: {
-                                        className: classItem.name.url,
-                                        archetype: arch.name.url
-                                    } }"
-                                    class="class-item__arch-item"
-                                >
-                                    <span class="class-item__arch-item_name">{{ arch.name.rus }}</span>
-
-                                    <span class="class-item__arch-item_book">
-                                        {{ `${ arch.source } / ${ arch.name.eng }` }}
-                                    </span>
-                                </router-link>
-                            </div>
-                        </div>
-                    </div>
-
                     <div
-                        v-if="classItem?.archetypes?.homebrew?.list?.length"
+                        v-for="(col, colKey) in classItem.archetypes"
+                        :key="colKey"
                         class="class-item__arch-list_col"
                     >
                         <div
+                            v-for="(group, groupKey) in col"
+                            :key="groupKey"
                             class="class-item__arch-type"
                         >
                             <div class="class-item__arch-type_name">
-                                {{ classItem.archetypes.homebrew.name }}
+                                {{ group.name }}
                             </div>
 
                             <div class="class-item__arch-type_items">
                                 <router-link
-                                    v-for="(arch, archKey) in classItem.archetypes.homebrew.list"
+                                    v-for="(arch, archKey) in group.list"
                                     :key="archKey"
-                                    :to="{ name: 'archetype', params: {
-                                        className: classItem.name.url,
-                                        archetype: arch.name.url
-                                    } }"
+                                    :to="{ path: arch.name.url }"
                                     class="class-item__arch-item"
                                 >
                                     <span class="class-item__arch-item_name">{{ arch.name.rus }}</span>
 
                                     <span class="class-item__arch-item_book">
-                                        {{ `${ arch.source } / ${ arch.name.eng }` }}
+                                        {{ `${ arch.source.shortName } / ${ arch.name.eng }` }}
                                     </span>
                                 </router-link>
                             </div>
@@ -184,18 +127,16 @@
             }
         },
         computed: {
-            hasArchetypes() {
-                return !!this.classItem?.archetypes?.main?.list?.length
-                    || !!this.classItem?.archetypes?.settings?.list?.length
-                    || !!this.classItem?.archetypes?.homebrew?.list?.length
-            },
-
             isOpenedArchetypes() {
                 if (this.$route.params?.className === this.classItem.name?.url) {
                     return true
                 }
 
                 return this.submenu.show
+            },
+
+            getSVGName() {
+                return `class-${this.classItem.name.eng.toLowerCase().replaceAll(' ', '-')}`
             }
         },
         watch: {
@@ -229,7 +170,7 @@
 
             updateGrid() {
                 this.$nextTick(() => this.$redrawVueMasonry('classes-items'))
-            }
+            },
         }
     }
 </script>
@@ -241,6 +182,10 @@
 
         @include media-min($md) {
             width: calc(50% - 8px);
+        }
+
+        @include media-min($xxl) {
+            width: calc(100% / 3 - 16px * 2 / 3);
         }
 
         &__content {
@@ -273,10 +218,7 @@
             ::v-deep(> svg) {
                 width: 50px;
                 height: 50px;
-
-                path {
-                    stroke: var(--primary);
-                }
+                color: var(--primary);
             }
 
             & + .class-item {
@@ -380,8 +322,16 @@
                 }
 
                 @include media-min($xxl) {
-                    flex-direction: row;
+                    padding-left: 16px;
                 }
+
+                @include media-min($full_hd) {
+                    padding-left: 74px;
+                }
+
+                //@include media-min($retina) {
+                //    flex-direction: row;
+                //}
 
                 &_col {
                     flex: 1;
@@ -411,7 +361,7 @@
                 &_name {
                     font: {
                         size: calc(var(--h5-font-size) + 2px);
-                        family: Lora, serif;
+                        family: "Lora", serif;
                         weight: 300;
                     };
                     color: var(--text-color-title);
@@ -463,9 +413,7 @@
                 }
 
                 &__toggle {
-                    svg {
-                        transform: rotate(-180deg);
-                    }
+                    display: none;
                 }
 
                 &__arch-list {

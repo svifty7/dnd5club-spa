@@ -58,9 +58,9 @@
             }
         },
         async beforeCreate() {
-            const uiStore = useUIStore();
-
             try {
+                const uiStore = useUIStore();
+
                 await uiStore.getLeftMenuItems();
             } catch (e) {
                 throw new Error(e)
@@ -92,7 +92,7 @@
 
 <style lang="scss" scoped>
     .nav-bar {
-        position: relative;
+        position: sticky;
         top: initial;
         left: 0;
         bottom: 0;
@@ -102,13 +102,14 @@
         background-color: var(--bg-main);
         z-index: 102;
         margin-top: auto;
+        border-top: 1px solid var(--border);
 
         @include media-min($md) {
             flex-shrink: 0;
             width: 72px;
             height: 100%;
             margin-top: initial;
-            border-right: 1px solid var(--border);
+            border: 0;
         }
 
         &__nav-list,
@@ -132,7 +133,7 @@
             bottom: 100%;
             background-color: var(--bg-main);
             width: 100%;
-            height: calc(100vh - 73px);
+            height: calc(var(--max-vh) - 73px);
             overflow: hidden scroll;
             padding: 32px 16px;
             display: none;

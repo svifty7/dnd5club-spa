@@ -21,6 +21,11 @@
     background-color: transparent;
     outline: none;
   }
+
+  &::selection {
+    background: var(--primary);
+    color: var(--text-btn-color);
+  }
 }
 
 .hidden {
@@ -33,11 +38,14 @@
 
 body {
   display: flex;
-  font-family: Open Sans, serif;
+  font-family: "Open Sans", sans-serif;
   background-color: var(--bg-main);
   font-size: var(--main-font-size);
   outline: none;
   color: var(--text-color);
+  transition:
+          background-color ease-in-out .2s,
+          color ease-in-out .2s;
 }
 
 html,
@@ -45,7 +53,7 @@ body,
 #dnd5club,
 .dnd5club {
   width: 100%;
-  height: calc(100% - 0px);
+  height: var(--max-vh);
   overflow: hidden auto;
 }
 
@@ -55,8 +63,7 @@ button {
   cursor: pointer;
 }
 
-.become-discord-button,
-.become-patron-button {
+.become-button {
   @include css_anim();
 
   padding: 8px 16px;
@@ -75,35 +82,60 @@ button {
     margin-left: 8px;
   }
 
+  & + & {
+    margin-left: 8px;
+  }
+
   @include media-min($md) {
     &:hover {
       color: var(--text-btn-color);
     }
   }
-}
 
-.become-discord-button {
-  background-color: var(--discord-base);
+  &.is-discord {
+    background-color: var(--discord-base);
 
-  @include media-min($md) {
-    &:hover {
-      background-color: var(--discord-hover);
+    @include media-min($md) {
+      &:hover {
+        background-color: var(--discord-hover);
+      }
     }
   }
-}
 
-.become-patron-button {
-  background-color: var(--patreon-base);
+  &.is-patreon {
+    background-color: var(--patreon-base);
 
-  @include media-min($md) {
-    &:hover {
-      background-color: var(--patreon-hover);
+    @include media-min($md) {
+      &:hover {
+        background-color: var(--patreon-hover);
+      }
+    }
+  }
+
+  &.is-vk {
+    background-color: var(--vk-base);
+
+    @include media-min($md) {
+      &:hover {
+        background-color: var(--vk-hover);
+      }
+    }
+  }
+
+  &.is-boosty {
+    background-color: var(--boosty-base);
+
+    @include media-min($md) {
+      &:hover {
+        background-color: var(--boosty-hover);
+      }
     }
   }
 }
 
 input {
-  &[type="text"] {
+  &[type="text"],
+  &[type="number"] {
     overflow: hidden;
     text-overflow: ellipsis;
   }

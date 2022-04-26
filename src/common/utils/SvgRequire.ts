@@ -1,4 +1,4 @@
-const req = require.context('@/assets/icons/svg', false, /\.svg$/);
+const req = require.context('@/assets/icons/svg', true, /\.svg$/);
 
 function requireAll(requireContext: __WebpackModuleApi.RequireContext) {
     return requireContext

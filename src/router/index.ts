@@ -3,6 +3,9 @@ import {
     createWebHistory,
 } from 'vue-router';
 import { useHomeStore } from '@/store/HomeStore';
+import { useUIStore } from '@/store/UIStore';
+import { useClassesStore } from '@/store/Character/ClassesStore';
+import { useRacesStore } from '@/store/Character/RacesStore';
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -33,16 +36,54 @@ const router = createRouter({
                     name: 'classDetail',
                     path: '/classes/:className',
                     component: () => import('@/views/CharacterViews/Classes/ClassDetail.vue'),
+                    beforeEnter: async (to, from, next) => {
+                        const store = useClassesStore();
+
+                        await store.setClassInfo(<string>to.params.className);
+
+                        next()
+                    },
                     children: [{
-                        name: 'archetype',
-                        path: '/classes/:className/:archetype',
+                        name: 'classArchetype',
+                        path: '/classes/:className/:classArchetype',
                         component: () => import('@/views/CharacterViews/Classes/ClassDetail.vue'),
+                        beforeEnter: async (to, from, next) => {
+                            const store = useClassesStore();
+
+                            await store.setClassInfo(<string>to.params.className, <string>to.params.classArchetype);
+
+                            next()
+                        },
                     }]
                 }]
             }, {
                 name: 'races',
                 path: '/races',
                 component: () => import('@/views/CharacterViews/Races/RacesView.vue'),
+                children: [{
+                    name: 'raceDetail',
+                    path: '/races/:raceName',
+                    component: () => import('@/views/CharacterViews/Races/RaceDetail.vue'),
+                    beforeEnter: async (to, from, next) => {
+                        const store = useRacesStore();
+
+                        await store.setRaceInfo(<string>to.params.raceName);
+
+                        next()
+                    },
+                    children: [{
+                        name: 'classArchetype',
+                        path: '/races/:raceName/:subrace',
+                        component: () => import('@/views/CharacterViews/Races/RaceDetail.vue'),
+                        beforeEnter: async (to, from, next) => {
+                            const store = useRacesStore();
+
+                            await store.setRaceInfo(<string>to.params.raceName, <string>to.params.subrace);
+
+                            next()
+                        },
+                    }]
+                }]
             }, {
                 name: 'traits',
                 path: '/traits',
@@ -60,6 +101,11 @@ const router = createRouter({
             name: 'spells',
             path: '/spells',
             component: () => import('@/views/SpellViews/Spells/SpellsView.vue'),
+            children: [{
+                name: 'spellDetail',
+                path: '/spells/:spellName',
+                component: () => import('@/views/SpellViews/Spells/SpellDetail.vue')
+            }]
         }, {
             name: 'inventory',
             path: '/inventory',
@@ -148,19 +194,17 @@ const router = createRouter({
                 component: () => import('@/views/ToolViews/Madness/MadnessView.vue'),
             }]
         }, {
-            name: 'login',
-            path: '/login',
-            component: () => import('@/views/AccountViews/Login/LoginView.vue'),
-        }, {
-            name: 'registration',
-            path: '/registration',
-            component: () => import('@/views/AccountViews/Registration/RegistrationView.vue'),
-        }, {
             name: 'not-found',
             path: '/:pathMatch(.*)*',
             component: () => import('@/views/NotFoundView.vue'),
         }
     ],
 });
+
+router.beforeEach(() => {
+    const UIStore = useUIStore();
+
+    UIStore.closeMenu();
+})
 
 export default router;

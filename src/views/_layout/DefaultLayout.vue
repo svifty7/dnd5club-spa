@@ -22,7 +22,6 @@
         display: flex;
         flex-direction: column-reverse;
         width: 100%;
-        height: 100%;
 
         @include media-min($md) {
             flex-direction: row;
@@ -30,9 +29,8 @@
 
         .content {
             width: 100%;
-            height: 100%;
-            overflow: hidden;
             position: relative;
+            max-width: 1360px;
         }
     }
 </style>

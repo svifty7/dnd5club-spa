@@ -56,28 +56,60 @@
             </router-link>
         </div>
 
-        <!-- TODO: Убрать абсолютные пути на картинки -->
+        <div class="home__telegram">
+            <div class="home__telegram_icon">
+                <svg-icon icon-name="telegram-bot"/>
+            </div>
+
+            <div class="home__telegram_body">
+                <h4>DnD5Club Telegram Bot</h4>
+
+                <p>
+                    Мы сделали бота в Telegram, чтобы вы могли быстро находить нужные вам заклинания в компактном виде
+                    или бросить кубы, если вы забыли их дома.
+                </p>
+
+                <div class="home__telegram_footer">
+                    <a href="/telegram">Описание</a>
+                    <a
+                        href="//t.me/dnd5club_bot"
+                        target="_blank"
+                    >Попробовать</a>
+                </div>
+            </div>
+        </div>
+
         <div class="home__info">
             <h3 class="home__info_title">
-                Есть ли у нас Discord?
+                Мы в интернете
             </h3>
 
             <p>
-                Присоединяйтесь, к <a
-                    href="https://discord.gg/zqBnMJVf3z"
-                    target="_blank"
-                >нашему каналу</a> и участвуйте в обсуждение новых функций на сайте.
+                Самые свежие новости и обсуждения по сайту у нас в сетях. Не проходите мимо и принимайте участие.
             </p>
 
             <p>
                 <a
-                    href="https://discord.gg/zqBnMJVf3z"
-                    class="become-discord-button"
+                    href="//vk.com/dnd5club"
+                    class="become-button is-vk"
+                    target="_blank"
+                >
+                    <svg-icon
+                        icon-name="vk"
+                        :fill-enable="true"
+                        :stroke-enable="false"
+                    />
+
+                    <span>ВКонтакте</span>
+                </a>
+
+                <a
+                    href="//discord.gg/zqBnMJVf3z"
+                    class="become-button is-discord"
                     target="_blank"
                 >
                     <svg-icon
                         icon-name="discord"
-                        size="24"
                         :fill-enable="true"
                         :stroke-enable="false"
                     />
@@ -89,45 +121,37 @@
 
         <div class="home__info">
             <h3 class="home__info_title">
-                Как нас поддержать?
+                Поддержать
             </h3>
 
             <p>
                 У нас есть <a
-                    href="https://www.patreon.com/dnd5club"
+                    href="//boosty.to/dnd5club"
                     target="_blank"
-                ><img
-                    src="https://dnd5.club/resources/assets/icon/patreon.png"
-                    alt="Мы на Patreon"
-                    style="height: 12px;"
-                > Patreon</a>, а так-же вы
-                можете поддержать нашего <b>Мастер Ломастер</b> на <a
-                    href="https://boosty.to/dnd5eclub"
-                    target="_blank"
-                ><img
-                    src="https://dnd5.club/resources/assets/icon/boosty.png"
+                > <img
+                    :src="require('@/assets/img/boosty.png')"
                     alt="Мы на Boosty"
                     style="height: 12px;"
-                > Boosty</a> он создает потрясающие карты.
-            </p>
-
-            <p>
-                <a
-                    href="https://www.patreon.com/bePatron?u=64807880"
-                    data-patreon-widget-type="become-patron-button"
-                    class="become-patron-button"
+                > Boosty</a>, а так-же вы
+                можете поддержать нашего <a
+                    href="//boosty.to/dnd5eclub"
                     target="_blank"
-                >
-                    <svg-icon
-                        icon-name="patreon"
-                        size="24"
-                        :fill-enable="true"
-                        :stroke-enable="false"
-                    />
-
-                    <span>Стать патроном</span>
-                </a>
+                >Мастер Ломастер</a> он создает потрясающие карты.
             </p>
+
+            <a
+                href="//discord.gg/zqBnMJVf3z"
+                class="become-button is-boosty"
+                target="_blank"
+            >
+                <svg-icon
+                    icon-name="boosty"
+                    :fill-enable="true"
+                    :stroke-enable="false"
+                />
+
+                <span>Поддержать на Boosty</span>
+            </a>
         </div>
 
         <div class="home__info">
@@ -137,95 +161,19 @@
 
             <p class="home__info_friends">
                 <a
-                    v-tooltip="{content: 'Канал расскжет вам о тонкостях и нюансах игры в онлайне. Поможет разобраться с виртуальными столами.<br/> Упростит подготовку к вашей игре. Автоматизирует максимум процессов игровой механики. <br />Всё, чтобы игра стала атмосфернее и интереснее.', html: true}"
-                    href="https://www.youtube.com/channel/UCMfMw5ZX4_rZ4rv4TlY8j8g?partner=dnd5.club"
+                    v-for="(partner, key) in partners"
+                    :key="key"
+                    v-tooltip="{content: partner.tooltip, html: true}"
+                    :href="partner.url"
                     class="home__info_friend"
                     target="_blank"
                 >
                     <img
-                        src="https://dnd5.club/resources/assets/partner/koroz.png"
-                        alt="Онлайн ширма"
+                        :src="require(`@/assets/img/partners/${partner.img.path}`)"
+                        :alt="partner.img.alt"
                     >
 
-                    <span>«Онлайн ширма»</span>
-                </a>
-                <a
-                    v-tooltip="{content: 'Сервер ставит перед собой цель помочь новичкам, интересующимся D&D в Discord сегменте, <br/>а также стремится стать надежной базой для Discord-комьюнити системы D&D.', html: true}"
-                    href="https://discord.gg/Vxu2Cu9mbM?partner=dnd5.club"
-                    class="home__info_friend"
-                    target="_blank"
-                >
-                    <img
-                        src="https://dnd5.club/resources/assets/partner/Empire_tavern.png"
-                        alt="Empire Tavern"
-                    >
-
-                    <span>Empire Tavern</span>
-                </a>
-                <a
-                    v-tooltip="{content: 'Это клуб ролевых игр Великого Новгорода Студия «Ravenheart». <br />Если ты хочешь круто провести время, то ты пришел по адресу!', html: true}"
-                    href="https://vk.com/ravenheart_studio?partner=dnd5.club"
-                    class="home__info_friend"
-                    target="_blank"
-                >
-                    <img
-                        src="https://dnd5.club/resources/assets/partner/ravenheart_studio.jpg"
-                        alt="Студия «Ravenheart»"
-                    >
-
-                    <span>Студия «Ravenheart»</span>
-                </a>
-                <a
-                    v-tooltip="{content: 'Сообщество опытного мастера Andy по настольным и ролевым играм, <br />который хочет сделать ваш досуг максимально интересным и доступным.', html: true}"
-                    href="https://vk.com/anykeyspb?partner=dnd5.club"
-                    class="home__info_friend"
-                    target="_blank"
-                >
-                    <img
-                        src="https://dnd5.club/resources/assets/partner/any_key.png"
-                        alt="ANY KEY"
-                    >
-
-                    <span>ANY KEY</span>
-                </a>
-                <a
-                    v-tooltip="{content: 'Random Rules это канал про настольные ролевые игры. <br />Любите проводить время с друзьями, играя в Dungeons & Dragons? Вам сюда!', html: true}"
-                    href="https://vk.com/rrules?partner=dnd5.club"
-                    class="home__info_friend"
-                    target="_blank"
-                >
-                    <img
-                        src="https://dnd5.club/resources/assets/partner/random_rules.jpg"
-                        alt="Random Rules"
-                    >
-
-                    <span>Random Rules</span>
-                </a>
-                <a
-                    v-tooltip="{content: 'DiceHead собирает множество информации по Dungeons & Dragons, <br />выкладывает материалы для вдохновения и стремиться поддерживать сообщество НРИ в России.', html: true}"
-                    href="https://vk.com/dicehead_dnd?partner=dnd5.club"
-                    class="home__info_friend"
-                    target="_blank"
-                >
-                    <img
-                        src="https://dnd5.club/resources/assets/partner/dicehead.jpg"
-                        alt="DiceHead | D&amp;D"
-                    >
-
-                    <span>DiceHead | D&amp;D</span>
-                </a>
-                <a
-                    v-tooltip="{content: 'Короткие авторские приключения для D&amp;D 5e и других систем.', html: true}"
-                    href="https://vk.com/ngdnd?partner=dnd5.club"
-                    class="home__info_friend"
-                    target="_blank"
-                >
-                    <img
-                        src="https://dnd5.club/resources/assets/partner/ngdnd.jpg"
-                        alt="Заметки упыря | Короткие приключения | D&amp;D"
-                    >
-
-                    <span>Заметки упыря</span>
+                    <span>{{ partner.name }}</span>
                 </a>
             </p>
         </div>
@@ -250,7 +198,7 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { mapActions, mapState } from 'pinia/dist/pinia';
+    import { mapState } from 'pinia/dist/pinia';
     import { useHomeStore } from '@/store/HomeStore/index.ts';
 
     export default {
@@ -258,7 +206,70 @@
         components: { SvgIcon },
         data() {
             return {
-                search: ''
+                search: '',
+                partners: [{
+                    name: '«Онлайн ширма»',
+                    url: '//www.youtube.com/channel/UCMfMw5ZX4_rZ4rv4TlY8j8g?partner=dnd5.club',
+                    // eslint-disable-next-line max-len
+                    tooltip: 'Канал расскжет вам о тонкостях и нюансах игры в онлайне. Поможет разобраться с виртуальными столами.<br/> Упростит подготовку к вашей игре. Автоматизирует максимум процессов игровой механики. <br />Всё, чтобы игра стала атмосфернее и интереснее.',
+                    img: {
+                        path: 'koroz.png',
+                        alt: 'Онлайн ширма'
+                    },
+                }, {
+                    name: 'Empire Tavern',
+                    url: '//discord.gg/Vxu2Cu9mbM?partner=dnd5.club',
+                    // eslint-disable-next-line max-len
+                    tooltip: 'Сервер ставит перед собой цель помочь новичкам, интересующимся D&D в Discord сегменте, <br/>а также стремится стать надежной базой для Discord-комьюнити системы D&D.',
+                    img: {
+                        path: 'empire-tavern.png',
+                        alt: 'Empire Tavern'
+                    },
+                }, {
+                    name: 'Студия «Ravenheart»',
+                    url: '//vk.com/ravenheart_studio?partner=dnd5.club',
+                    // eslint-disable-next-line max-len
+                    tooltip: 'Это клуб ролевых игр Великого Новгорода Студия «Ravenheart». <br />Если ты хочешь круто провести время, то ты пришел по адресу!',
+                    img: {
+                        path: 'ravenheart-studio.jpg',
+                        alt: 'Студия «Ravenheart»'
+                    },
+                }, {
+                    name: 'ANY KEY',
+                    url: '//vk.com/anykeyspb?partner=dnd5.club',
+                    // eslint-disable-next-line max-len
+                    tooltip: 'Сообщество опытного мастера Andy по настольным и ролевым играм, <br />который хочет сделать ваш досуг максимально интересным и доступным.',
+                    img: {
+                        path: 'any-key.png',
+                        alt: 'ANY KEY'
+                    },
+                }, {
+                    name: 'Random Rules',
+                    url: '//vk.com/rrules?partner=dnd5.club',
+                    // eslint-disable-next-line max-len
+                    tooltip: 'Random Rules это канал про настольные ролевые игры. <br />Любите проводить время с друзьями, играя в Dungeons & Dragons? Вам сюда!',
+                    img: {
+                        path: 'random-rules.jpg',
+                        alt: 'Random Rules'
+                    },
+                }, {
+                    name: 'DiceHead | D&amp;D',
+                    url: '//vk.com/dicehead_dnd?partner=dnd5.club',
+                    // eslint-disable-next-line max-len
+                    tooltip: 'DiceHead собирает множество информации по Dungeons & Dragons, <br />выкладывает материалы для вдохновения и стремиться поддерживать сообщество НРИ в России.',
+                    img: {
+                        path: 'dicehead.jpg',
+                        alt: 'DiceHead | D&amp;D'
+                    },
+                }, {
+                    name: 'Заметки упыря',
+                    url: '//vk.com/ngdnd?partner=dnd5.club',
+                    tooltip: 'Короткие авторские приключения для D&amp;D 5e и других систем.',
+                    img: {
+                        path: 'ngdnd.jpg',
+                        alt: 'Заметки упыря | Короткие приключения | D&amp;D'
+                    },
+                }]
             }
         },
         computed: {
@@ -497,7 +508,7 @@
             &_name {
                 font: {
                     weight: 300;
-                    family: Open Sans, serif;
+                    family: "Open Sans", serif;
                     size: calc(var(--h4-font-size) - 6px);
                 };
                 line-height: 16px;
@@ -515,6 +526,44 @@
                             &_icon {
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        &__telegram {
+            max-width: 640px;
+            display: flex;
+            padding: 16px;
+            border-radius: 16px;
+            background-color: var(--hover);
+            margin-top: 16px;
+
+            &_icon {
+                width: 48px;
+                height: 48px;
+                flex-shrink: 0;
+                color: var(--primary);
+            }
+
+            &_body {
+                margin-left: 16px;
+
+                p {
+                    margin-top: 8px;
+                }
+            }
+
+            &_footer {
+                display: flex;
+                flex-wrap: wrap;
+
+                a {
+                    font-weight: 600;
+                    display: flex;
+
+                    & + & {
+                        margin-left: 8px;
                     }
                 }
             }

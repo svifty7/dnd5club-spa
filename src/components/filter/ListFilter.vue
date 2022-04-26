@@ -54,22 +54,19 @@
             v-if="filter.show"
             class="filter__dropdown"
         >
-            <perfect-scrollbar>
-                <div class="filter__dropdown_body">
-                    <slot/>
-                </div>
-            </perfect-scrollbar>
+            <div class="filter__dropdown_body">
+                <slot/>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 
     export default {
         name: 'ListFilter',
-        components: { SvgIcon, PerfectScrollbar },
+        components: { SvgIcon },
         emits: ['clear-filter', 'search'],
         data: () => ({
             search: '',
@@ -88,6 +85,10 @@
             width: 100%;
             display: flex;
             position: relative;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: var(--bg-secondary);
         }
 
         &__search {
@@ -208,13 +209,13 @@
 
         &__dropdown {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 16px);
             background-color: var(--bg-sub-menu);
-            border-top: 1px solid var(--border);
             width: 100%;
-            max-height: calc(100vh - 72px - 42px - 73px); // head, filter, menu
+            max-height: calc(var(--max-vh) - 72px - 42px - 73px - 16px); // head, filter, menu, padding
             overflow: hidden auto;
             z-index: 10;
+            border-radius: 12px;
 
             &_body {
                 width: 100%;

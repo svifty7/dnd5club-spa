@@ -164,9 +164,7 @@
             },
         },
         methods: {
-            ...mapActions(useUIStore, {
-                toggleSubmenu: 'toggleSubmenu',
-            }),
+            ...mapActions(useUIStore, ['toggleSubmenu']),
 
             setSubmenuPositionClass() {
                 const { submenu } = this.$refs;

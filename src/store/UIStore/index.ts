@@ -56,6 +56,10 @@ export const useUIStore = defineStore('UIStore', {
             html.dataset.theme = `theme-${ themeName }`;
         },
 
+        closeMenu() {
+            this.menu.show = false;
+        },
+
         toggleMenuShowing() {
             this.menu.show = !this.menu.show;
         },

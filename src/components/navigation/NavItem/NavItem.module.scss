@@ -47,6 +47,7 @@
     align-items: center;
     justify-content: center;
     margin-left: auto;
+    color: var(--text-color);
 
     svg {
       width: 24px;
@@ -265,6 +266,7 @@
         &.router-link-exact-active {
           color: var(--text-btn-color);
           background-color: var(--hover);
+          opacity: 1;
         }
 
         @include media-min($md) {
