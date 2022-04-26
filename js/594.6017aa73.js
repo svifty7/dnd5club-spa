@@ -1,1 +1,0 @@
-"use strict";(self["webpackChunkdnd5club_spa"]=self["webpackChunkdnd5club_spa"]||[]).push([[594],{1594:function(n,s,e){e.r(s),e.d(s,{default:function(){return d}});var l=e(9199);const u={class:"spells"};function c(n,s,e,c,r,a){return(0,l.wg)(),(0,l.iD)("div",u," spells ")}var r={name:"SpellsView"},a=e(89);const t=(0,a.Z)(r,[["render",c]]);var d=t}}]);
