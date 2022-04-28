@@ -1,8 +1,8 @@
 <template>
     <div class="class-detail">
         <section-header
-            :title="title"
-            :subtitle="subtitle"
+            :title="currentRace.name.rus"
+            :subtitle="currentRace.name.eng"
             :copy="urlForCopy"
             :level="2"
             fullscreen
@@ -11,40 +11,37 @@
 </template>
 
 <script>
-    import { useClassesStore } from '@/store/Character/ClassesStore.ts';
-    import { mapActions, mapState } from 'pinia/dist/pinia';
     import SectionHeader from '@/components/SectionHeader';
+    import { useRacesStore } from '@/store/Character/RacesStore';
 
     export default {
         name: 'RaceDetail',
         components: { SectionHeader },
-        async beforeRouteUpdate(to) {
-            try {
-                await this.setClassInfo(to.params.className, to.params?.classArchetype);
-            } catch (err) {
-                await this.$router.push({ name: 'NotFound' })
-            }
+        async beforeRouteUpdate(to, from, next) {
+            this.loading = true;
+
+            const store = useRacesStore();
+
+            store.deselectRace();
+            store.setRaceInfo(to.params.raceName, to.params?.subrace)
+                .then(() => {
+                    this.loading = false;
+                    this.setTab(0);
+
+                    next();
+                })
+                .catch(err => {
+                    console.log(err)
+                });
         },
+        data: () => ({
+            raceStore: useRacesStore(),
+            loading: false,
+            currentTab: undefined
+        }),
         computed: {
-            ...mapState(useClassesStore, {
-                currentClass: 'getCurrentClass',
-                currentArchetype: 'getCurrentArchetype'
-            }),
-
-            title() {
-                if (this.$route.name === 'classArchetype') {
-                    return `${this.currentClass.name.rus} ${this.currentArchetype.name.rus}`;
-                }
-
-                return this.currentArchetype.name.rus
-            },
-
-            subtitle() {
-                if (this.$route.name === 'classArchetype') {
-                    return `${this.currentClass.name.eng} ${this.currentArchetype.name.eng}`;
-                }
-
-                return this.currentArchetype.name.eng
+            currentRace() {
+                return this.raceStore.getCurrentRace;
             },
 
             urlForCopy() {
@@ -52,7 +49,6 @@
             }
         },
         methods: {
-            ...mapActions(useClassesStore, ['setCurrentClass']),
         }
     }
 </script>

@@ -3,14 +3,18 @@
         v-slot="{href, navigate, isActive}"
         v-bind="$props"
         custom
-        :to="{ path: classItem.name.url }"
+        :to="{ path: classItem.url }"
     >
         <div
             v-bind="$attrs"
             ref="classItem"
             v-masonry-tile
             class="class-item"
-            :class="{ 'router-link-active': isActive }"
+            :class="{
+                'router-link-active': isActive || $route.fullPath.match(new RegExp(`^${ classItem.url }`)),
+                'is-class-selected': $route.name === 'classDetail',
+                'is-green': false
+            }"
         >
             <div class="class-item__content">
                 <div class="class-item__main">
@@ -20,7 +24,7 @@
                         @click.left.prevent.exact="navigate()"
                     >
                         <span class="class-item__icon">
-                            <svg-icon :icon-name="getSVGName"/>
+                            <svg-icon :icon-name="classItem.icon"/>
                         </span>
 
                         <span class="class-item__body">
@@ -53,6 +57,7 @@
 
                     <button
                         v-if="!!classItem?.archetypes?.length"
+                        v-tooltip.left="{ content: 'Архетипы' }"
                         type="button"
                         class="class-item__toggle"
                         :class="{ 'is-active': submenu.show }"
@@ -85,13 +90,19 @@
                                 <router-link
                                     v-for="(arch, archKey) in group.list"
                                     :key="archKey"
-                                    :to="{ path: arch.name.url }"
+                                    :to="{ path: arch.url }"
                                     class="class-item__arch-item"
                                 >
                                     <span class="class-item__arch-item_name">{{ arch.name.rus }}</span>
 
                                     <span class="class-item__arch-item_book">
-                                        {{ `${ arch.source.shortName } / ${ arch.name.eng }` }}
+                                        <span v-tooltip="{ content: arch.source.name }">
+                                            {{ arch.source.shortName }}
+                                        </span>
+
+                                        /
+
+                                        <span>{{ arch.name.eng }}</span>
                                     </span>
                                 </router-link>
                             </div>
@@ -110,6 +121,7 @@
     export default {
         name: 'ClassItem',
         components: { SvgIcon },
+        inheritAttrs: false,
         props: {
             classItem: {
                 type: Object,
@@ -128,28 +140,17 @@
         },
         computed: {
             isOpenedArchetypes() {
-                if (this.$route.params?.className === this.classItem.name?.url) {
+                if (this.$route.params?.className === this.classItem.url) {
                     return true
                 }
 
                 return this.submenu.show
             },
-
-            getSVGName() {
-                return `class-${this.classItem.name.eng.toLowerCase().replaceAll(' ', '-')}`
-            }
         },
         watch: {
-            submenu: {
-                deep: true,
-                handler() {
-                    this.updateGrid();
-                }
-            },
-
             isOpenedArchetypes() {
                 this.updateGrid();
-            }
+            },
         },
         mounted() {
             this.$nextTick(() => {
@@ -188,8 +189,16 @@
             width: calc(100% / 3 - 16px * 2 / 3);
         }
 
+        &.is-class-selected {
+            width: 100%;
+        }
+
+        &.is-green {
+            background-color: var(--bg-homebrew-gradient-left);
+        }
+
         &__content {
-            background-color: var(--bg-secondary);
+            background-color: var(--bg-table-list);
             border: 1px solid var(--bg-secondary);
             border-radius: 16px;
             overflow: hidden;
@@ -207,17 +216,15 @@
         }
 
         &__icon {
-            padding: 16px 0 16px 16px;
-            width: 66px;
-            height: 82px;
+            padding: 10px 0 10px 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
 
             ::v-deep(> svg) {
-                width: 50px;
-                height: 50px;
+                width: 42px;
+                height: 42px;
                 color: var(--primary);
             }
 
@@ -229,35 +236,31 @@
         }
 
         &__body {
-            padding: 16px 16px 16px 98px;
+            padding: 10px 12px 10px 16px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
 
             &_row {
                 display: flex;
-
-                &:nth-child(n+2) {
-                    margin-top: 8px;
-                }
             }
         }
 
         &__name {
             padding-right: 8px;
 
-            &--rus {
+            &--rus,
+            &--eng {
                 display: inline;
-                font-size: calc(var(--h5-font-size) + 2px);
+                font-size: var(--h5-font-size);;
                 font-weight: 500;
                 color: var(--text-color-title);
                 line-height: normal;
             }
 
             &--eng {
-                display: inline;
-                font-size: calc(var(--h5-font-size) + 2px);
-                font-weight: 500;
                 color: var(--text-g-color);
-                line-height: normal;
             }
         }
 
@@ -265,11 +268,13 @@
             color: var(--text-g-color);
             margin-left: auto;
             line-height: normal;
+            font-size: var(--main-font-size);
         }
 
         &__dice {
             color: var(--text-g-color);
             line-height: normal;
+            font-size: calc(var(--h5-font-size) - 1px);
         }
 
         &__toggle {
@@ -280,7 +285,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: transparent;
+            background-color: var(--bg-sub-menu);
 
             @include media-min($md) {
                 &:hover {
@@ -304,34 +309,10 @@
 
         &__arch {
             &-list {
-                padding: 0 16px 16px 16px;
+                padding: 0 16px 16px 62px;
                 display: none;
                 flex-direction: column;
                 gap: 16px;
-
-                @include media-min($sm) {
-                    padding-left: 74px;
-                }
-
-                @include media-min($md) {
-                    padding-left: 16px;
-                }
-
-                @include media-min($lg) {
-                    padding-left: 74px;
-                }
-
-                @include media-min($xxl) {
-                    padding-left: 16px;
-                }
-
-                @include media-min($full_hd) {
-                    padding-left: 74px;
-                }
-
-                //@include media-min($retina) {
-                //    flex-direction: row;
-                //}
 
                 &_col {
                     flex: 1;
@@ -409,7 +390,6 @@
             .class-item {
                 &__content {
                     border-color: var(--primary);
-                    background-color: var(--bg-sub-menu)
                 }
 
                 &__toggle {

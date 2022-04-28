@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { NCharacterClass } from '@/types/ClassJson.d';
 import HTTPService from '@/utils/HTTPService';
+import _ from 'lodash';
 
 interface IState {
     classes: NCharacterClass.IClass[]
@@ -37,12 +38,13 @@ export const useClassesStore = defineStore('ClassesStore', {
 
                 const result = [];
                 const sort = (list: NCharacterClass.IArchetype[]) => {
-                    const types = [...new Set(list.map(arch => arch.type))];
+                    const types = list.map(arch => arch.type);
+                    const typesSorted = _.uniqWith(_.sortBy(types, ['order']), _.isEqual);
                     const formatted: any = [];
 
                     let index = 0;
 
-                    for (let i = 0; i < types.length; i++) {
+                    for (let i = 0; i < typesSorted.length; i++) {
                         if (i === 0 || i % 2 === 0) {
                             formatted.push([]);
 
@@ -50,8 +52,8 @@ export const useClassesStore = defineStore('ClassesStore', {
                         }
 
                         formatted[index - 1].push({
-                            name: types[i],
-                            list: list.filter(arch => arch.type === types[i])
+                            name: typesSorted[i].name,
+                            list: list.filter(arch => arch.type.name === typesSorted[i].name)
                         });
                     }
 
@@ -73,10 +75,10 @@ export const useClassesStore = defineStore('ClassesStore', {
 
         async setClassInfo(className: string, archName?: string): Promise<void> {
             try {
-                let url = `/classes/${ className}`;
+                let url = `/classes/${ className }`;
 
                 if (archName) {
-                    url += `/${ archName}`;
+                    url += `/${ archName }`;
                 }
 
                 const res = await http.get(url);
@@ -87,10 +89,21 @@ export const useClassesStore = defineStore('ClassesStore', {
                     return;
                 }
 
-                this.selectedClass = res.data;
+                this.selectedClass = {
+                    ...res.data,
+                    tabs: _.sortBy(res.data.tabs, ['order'])
+                        .map((tab, index) => ({
+                            ...tab,
+                            active: index === 0
+                        }))
+                };
             } catch (err) {
                 console.error(err);
             }
         },
+
+        deselectClass(): void {
+            this.selectedClass = undefined;
+        }
     }
 });

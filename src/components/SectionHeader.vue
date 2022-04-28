@@ -1,8 +1,5 @@
 <template>
-    <div
-        class="section-header"
-        :style="{backgroundImage: bgImage}"
-    >
+    <div class="section-header">
         <div class="section-header__body">
             <div class="section-header__title">
                 <div class="section-header__title--text">
@@ -60,16 +57,9 @@
                     v-if="fullscreen"
                     type="button"
                     class="section-header__control--main is-only-desktop"
+                    @click.left.exact.prevent="uiStore.setFullscreenState(!uiStore.getContentConfig.fullscreen)"
                 >
-                    <svg-icon icon-name="fullscreen"/>
-                </button>
-
-                <button
-                    v-if="fullscreen"
-                    type="button"
-                    class="section-header__control--main is-only-desktop"
-                >
-                    <svg-icon icon-name="exit-fullscreen"/>
+                    <svg-icon :icon-name="uiStore.getContentConfig.fullscreen ? 'exit-fullscreen' : 'fullscreen'"/>
                 </button>
 
                 <button
@@ -87,24 +77,12 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
+    import { useUIStore } from '@/store/UIStore';
 
     export default {
         name: 'SectionHeader',
         components: { SvgIcon },
         props: {
-            level: {
-                type: [String, Number],
-                default: 1,
-                validator: value => {
-                    if (typeof Number(value) !== 'number') {
-                        return false;
-                    }
-
-                    const availLevels = [1, 2];
-
-                    return availLevels.includes(Number(value))
-                }
-            },
             title: {
                 type: String,
                 required: true
@@ -134,18 +112,10 @@
                 default: undefined
             }
         },
-        emits: ['close'],
+        data: () => ({
+            uiStore: useUIStore()
+        }),
         computed: {
-            bgImage() {
-                switch (Number(this.level)) {
-                    case 2:
-                        return 'var(--bg-title-img-2)';
-
-                    default:
-                        return 'var(--bg-title-img)';
-                }
-            },
-
             hasOptionalControls() {
                 return !!this.print || !!this.exportFoundry;
             },
@@ -197,11 +167,7 @@
         align-items: center;
         overflow: hidden;
         flex-shrink: 0;
-        background: {
-            color: var(--bg-main);
-            position: center left;
-            repeat: no-repeat;
-        }
+        background-color: var(--bg-sub-menu);
 
         &__body {
             padding: 0 16px;
@@ -218,14 +184,13 @@
             width: fit-content;
 
             &--text {
+                font-size: calc(var(--h1-font-size) - 12px);
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                position: relative;
                 color: var(--text-color-title);
-                font-weight: 300;
-                line-height: 32px;
-                font-size: calc(var(--h1-font-size) - 12px);
-                display: inline;
+                font-weight: 400;
 
                 @include media-min($md) {
                     font-size: calc(var(--h1-font-size) - 16px);
@@ -261,12 +226,11 @@
         }
 
         &__subtitle {
-            font-size: calc(var(--h2-font-size) - 14px);
+            font-size: calc( var(--h2-font-size) - 14px);
             color: var(--text-g-color);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-weight: 400;
         }
 
         &__controls {
@@ -300,13 +264,15 @@
                 }
 
                 @include media-min($md) {
-                    &.is-only-desktop {
-                        display: flex;
-                    }
-
                     &:hover {
                         background-color: var(--primary-hover);
                         color: var(--text-btn-color);
+                    }
+                }
+
+                @include media-min($lg) {
+                    &.is-only-desktop {
+                        display: flex;
                     }
                 }
             }

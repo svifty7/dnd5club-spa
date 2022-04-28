@@ -1,7 +1,4 @@
-import {
-    createRouter,
-    createWebHistory,
-} from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import { useHomeStore } from '@/store/HomeStore';
 import { useUIStore } from '@/store/UIStore';
 import { useClassesStore } from '@/store/Character/ClassesStore';
@@ -17,11 +14,7 @@ const router = createRouter({
             beforeEnter: async () => {
                 const homeStore = useHomeStore();
 
-                try {
-                    await homeStore.getMenuItems();
-                } catch {
-                    throw new Error('undefined error');
-                }
+                await homeStore.getMenuItems();
             }
         }, {
             name: 'character',
@@ -32,29 +25,25 @@ const router = createRouter({
                 name: 'classes',
                 path: '/classes',
                 component: () => import('@/views/CharacterViews/Classes/ClassesView.vue'),
+                beforeEnter: async () => {
+                    const store = useClassesStore();
+
+                    await store.initClassList();
+                },
                 children: [{
                     name: 'classDetail',
-                    path: '/classes/:className',
+                    path: ':className/:classArchetype?',
                     component: () => import('@/views/CharacterViews/Classes/ClassDetail.vue'),
                     beforeEnter: async (to, from, next) => {
                         const store = useClassesStore();
 
-                        await store.setClassInfo(<string>to.params.className);
+                        await store.setClassInfo(
+                            <string>to.params.className,
+                            <string | undefined>to.params.classArchetype
+                        );
 
                         next()
-                    },
-                    children: [{
-                        name: 'classArchetype',
-                        path: '/classes/:className/:classArchetype',
-                        component: () => import('@/views/CharacterViews/Classes/ClassDetail.vue'),
-                        beforeEnter: async (to, from, next) => {
-                            const store = useClassesStore();
-
-                            await store.setClassInfo(<string>to.params.className, <string>to.params.classArchetype);
-
-                            next()
-                        },
-                    }]
+                    }
                 }]
             }, {
                 name: 'races',
@@ -62,27 +51,15 @@ const router = createRouter({
                 component: () => import('@/views/CharacterViews/Races/RacesView.vue'),
                 children: [{
                     name: 'raceDetail',
-                    path: '/races/:raceName',
+                    path: ':raceName/:subrace?',
                     component: () => import('@/views/CharacterViews/Races/RaceDetail.vue'),
                     beforeEnter: async (to, from, next) => {
                         const store = useRacesStore();
 
-                        await store.setRaceInfo(<string>to.params.raceName);
+                        await store.setRaceInfo(<string>to.params.raceName, <string | undefined>to.params.subrace);
 
                         next()
                     },
-                    children: [{
-                        name: 'classArchetype',
-                        path: '/races/:raceName/:subrace',
-                        component: () => import('@/views/CharacterViews/Races/RaceDetail.vue'),
-                        beforeEnter: async (to, from, next) => {
-                            const store = useRacesStore();
-
-                            await store.setRaceInfo(<string>to.params.raceName, <string>to.params.subrace);
-
-                            next()
-                        },
-                    }]
                 }]
             }, {
                 name: 'traits',

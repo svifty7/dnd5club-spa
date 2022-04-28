@@ -30,7 +30,8 @@
         .content {
             width: 100%;
             position: relative;
-            max-width: 1360px;
+            max-width: 1320px;
+            margin: 0 auto;
         }
     }
 </style>

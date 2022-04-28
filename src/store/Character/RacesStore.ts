@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import HTTPService from '@/utils/HTTPService';
+import _ from 'lodash';
 import NCharacterRace from '@/types/RaceJson';
 
 interface IState {
@@ -34,12 +35,13 @@ export const useRacesStore = defineStore('RacesStore', {
 
                 const result = [];
                 const sort = (list: NCharacterRace.ISubRace[]) => {
-                    const types = [...new Set(list.map(subrace => subrace.type))];
+                    const types = list.map(subrace => subrace.type);
+                    const typesSorted = _.uniqWith(_.sortBy(types, ['order']), _.isEqual);
                     const formatted: any = [];
 
                     let index = 0;
 
-                    for (let i = 0; i < types.length; i++) {
+                    for (let i = 0; i < typesSorted.length; i++) {
                         if (i === 0 || i % 2 === 0) {
                             formatted.push([]);
 
@@ -47,8 +49,8 @@ export const useRacesStore = defineStore('RacesStore', {
                         }
 
                         formatted[index - 1].push({
-                            name: types[i],
-                            list: list.filter(subrace => subrace.type === types[i])
+                            name: typesSorted[i].name,
+                            list: list.filter(subrace => subrace.type.name === typesSorted[i].name)
                         });
                     }
 
@@ -68,8 +70,6 @@ export const useRacesStore = defineStore('RacesStore', {
                     result.push({ ...res.data[i] })
                 }
 
-                console.log(result)
-
                 this.races = result
             } catch (err) {
                 console.error(err);
@@ -78,10 +78,10 @@ export const useRacesStore = defineStore('RacesStore', {
 
         async setRaceInfo(raceName: string, subrace?: string): Promise<void> {
             try {
-                let url = `/races/${ raceName}`;
+                let url = `/races/${ raceName }`;
 
                 if (subrace) {
-                    url += `/${ subrace}`;
+                    url += `/${ subrace }`;
                 }
 
                 const res = await http.get(url);
@@ -92,10 +92,21 @@ export const useRacesStore = defineStore('RacesStore', {
                     return;
                 }
 
-                this.selectedRace = res.data;
+                this.selectedRace = {
+                    ...res.data,
+                    tabs: _.sortBy(res.data.tabs, ['order'])
+                        .map((tab, index) => ({
+                            ...tab,
+                            active: index === 0
+                        }))
+                };
             } catch (err) {
                 console.error(err);
             }
         },
+
+        deselectRace() {
+            this.selectedRace = undefined;
+        }
     }
 });

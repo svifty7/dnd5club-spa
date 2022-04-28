@@ -16,9 +16,14 @@ export interface IMenu {
     leftItems: ILeftMenuItem[]
 }
 
+export interface IContent {
+    fullscreen: boolean
+}
+
 export interface IUIStore {
     theme: string
     menu: IMenu
+    content: IContent
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -30,12 +35,16 @@ export const useUIStore = defineStore('UIStore', {
             minified: false,
             submenu: '',
             leftItems: []
+        },
+        content: {
+            fullscreen: true,
         }
     }),
 
     getters: {
         getTheme: state => state.theme,
         getMenuConfig: state => state.menu,
+        getContentConfig: state => state.content,
     },
 
     actions: {
@@ -205,6 +214,10 @@ export const useUIStore = defineStore('UIStore', {
 
                 resolve();
             })
+        },
+
+        setFullscreenState(state: boolean) {
+            this.content.fullscreen = state
         }
     }
 });

@@ -41,7 +41,7 @@
 
         <div class="home__links">
             <router-link
-                v-for="(link, index) in computedMenuItems"
+                v-for="(link, index) in homeStore.computedMenuItems"
                 :key="index"
                 :to="{name: link.name}"
                 class="home__link"
@@ -198,7 +198,6 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { mapState } from 'pinia/dist/pinia';
     import { useHomeStore } from '@/store/HomeStore/index.ts';
 
     export default {
@@ -207,6 +206,7 @@
         data() {
             return {
                 search: '',
+                homeStore: useHomeStore(),
                 partners: [{
                     name: '«Онлайн ширма»',
                     url: '//www.youtube.com/channel/UCMfMw5ZX4_rZ4rv4TlY8j8g?partner=dnd5.club',
@@ -272,11 +272,6 @@
                 }]
             }
         },
-        computed: {
-            ...mapState(useHomeStore, {
-                computedMenuItems: 'computedMenuItems',
-            })
-        },
     }
 </script>
 
@@ -287,28 +282,6 @@
         height: 100%;
         overflow: hidden auto;
         z-index: 1;
-
-        @include media-min($sm) {
-            padding: 32px;
-
-            &:before {
-                content: '';
-                display: block;
-                position: absolute;
-                bottom: 0;
-                right: 0;
-                width: 700px;
-                height: 700px;
-                opacity: 0.3;
-                z-index: -1;
-                background: {
-                    image: var(--bg-img-main);
-                    repeat: no-repeat;
-                    size: contain;
-                    position: right bottom;
-                };
-            }
-        }
 
         &__header {
             display: flex;

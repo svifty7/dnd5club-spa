@@ -110,6 +110,8 @@
             height: 100%;
             margin-top: initial;
             border: 0;
+            background-color: transparent;
+            top: 0;
         }
 
         &__nav-list,
@@ -152,6 +154,7 @@
                 display: flex;
                 align-items: center;
                 flex-direction: column;
+                background-color: transparent;
             }
         }
 

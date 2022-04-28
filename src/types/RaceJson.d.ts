@@ -1,28 +1,34 @@
 declare namespace NCharacterRace {
     interface IName {
-        rus: string;
-        eng: string;
-        url: string;
+        rus: string
+        eng: string
     }
 
     interface ISource {
-        shortName: string;
-        name: string;
+        shortName: string
+        name: string
+    }
+
+    interface ISubRaceType {
+        name: string
+        order: number
     }
 
     interface ISubRace {
-        name: IName;
-        type: string
-        abilities: string;
-        source: ISource;
+        name: IName
+        url: string
+        type: ISubRaceType
+        abilities: string
+        source: ISource
     }
 
     interface IRace {
-        name: IName;
-        abilities: string;
-        source: ISource;
-        icon?: string;
-        subraces?: ISubRace[];
+        name: IName
+        url: string
+        abilities: string
+        source: ISource
+        icon?: string
+        subraces?: ISubRace[]
     }
 }
 

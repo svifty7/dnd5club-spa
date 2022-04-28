@@ -135,6 +135,8 @@
             }
 
             @include media-min($md) {
+                background-color: transparent;
+
                 &:hover {
                     background-color: var(--hover);
                 }
