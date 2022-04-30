@@ -5,6 +5,10 @@ export default class HTTPService {
         baseURL: `${ process.env.VUE_APP_API_URL }/api/v1`
     });
 
+    private readonly rawAxios: AxiosInstance = axios.create({
+        baseURL: process.env.VUE_APP_API_URL
+    });
+
     public async post(url: string, data: any) {
         return this.axios({
             url,
@@ -15,6 +19,14 @@ export default class HTTPService {
 
     public async get(url: string, params?: any) {
         return this.axios({
+            url,
+            params,
+            method: 'get',
+        })
+    }
+
+    public async rawGet(url: string, params?: any) {
+        return this.rawAxios({
             url,
             params,
             method: 'get',

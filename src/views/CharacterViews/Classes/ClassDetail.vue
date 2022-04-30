@@ -1,6 +1,6 @@
 <template>
     <div
-        v-if="!loading"
+        v-if="!loading && currentClass"
         class="class-detail"
     >
         <section-header
@@ -11,9 +11,12 @@
             fullscreen
         />
 
-        <div class="class-detail__tabs">
+        <div
+            v-if="tabs.length"
+            class="class-detail__tabs"
+        >
             <button
-                v-for="(tab, tabKey) in currentClass.tabs"
+                v-for="(tab, tabKey) in tabs"
                 :key="tabKey"
                 class="class-detail__tab"
                 :class="{ 'is-active': currentTab.name === tab.name }"
@@ -29,13 +32,40 @@
             </button>
         </div>
 
-        <div class="class-detail__body">
-            {{ currentTab?.name }}
+        <div
+            v-if="currentTab?.content"
+            class="class-detail__body"
+        >
+            <div
+                ref="classBody"
+                class="class-detail__body--inner"
+            >
+                <!-- eslint-disable vue/no-v-html -->
+                <div
+                    v-if="currentTab.raw"
+                    class="class-detail__raw"
+                    v-html="currentTab.content"
+                />
+                <!-- eslint-enable vue/no-v-html -->
+
+                <div
+                    v-else-if="currentTab.name === 'Изображения'"
+                    class="class-detail__images"
+                >
+                    <img
+                        v-for="(img, imgKey) in currentTab.content"
+                        :key="imgKey"
+                        :src="img"
+                        :alt="currentClass.name.rus"
+                        class="class-detail__images_item"
+                    >
+                </div>
+            </div>
         </div>
     </div>
 
     <div
-        v-else
+        v-show="loading"
         class="class-detail"
     >
         <div class="class-detail__loader">
@@ -53,6 +83,7 @@
     import { useClassesStore } from '@/store/Character/ClassesStore.ts';
     import SectionHeader from '@/components/SectionHeader';
     import SvgIcon from '@/components/UI/SvgIcon';
+    import HTTPService from '@/utils/HTTPService';
 
     export default {
         name: 'ClassDetail',
@@ -67,9 +98,9 @@
 
             store.deselectClass();
             store.setClassInfo(to.params.className, to.params?.classArchetype)
-                .then(() => {
+                .then(async () => {
                     this.loading = false;
-                    this.setTab(0);
+                    await this.setTab(0);
 
                     next();
                 })
@@ -78,9 +109,11 @@
                 });
         },
         data: () => ({
+            http: new HTTPService(),
             classesStore: useClassesStore(),
-            loading: false,
-            currentTab: undefined
+            loading: true,
+            currentTab: undefined,
+            tabs: [],
         }),
         computed: {
             urlForCopy() {
@@ -91,17 +124,60 @@
                 return this.classesStore.getCurrentClass
             }
         },
-        beforeMount() {
-            this.setTab(0);
+        async beforeMount() {
+            this.tabs = this.currentClass.tabs.map(tab => ({
+                ...tab,
+                content: tab.content || undefined
+            }));
+
+            await this.setTab(0);
+
+            this.loading = false;
         },
         methods: {
             closeClass() {
                 this.$router.push({ name: 'classes' });
             },
 
-            setTab(index) {
-                this.currentTab = this.currentClass.tabs[index];
-            }
+            async setTab(index) {
+                try {
+                    const tab = this.tabs[index];
+
+                    if (!tab.content) {
+                        let res;
+
+                        if (tab.raw) {
+                            res = await this.http.rawGet(tab.url)
+                        } else {
+                            res = await this.http.get(tab.url);
+                        }
+
+                        if (res.status !== 200) {
+                            console.error(res.statusText);
+
+                            return;
+                        }
+
+                        tab.content = res.data;
+                    }
+
+                    this.currentTab = tab;
+
+                    this.$nextTick(() => {
+                        if (this.$refs.classBody) {
+                            this.$refs.classBody.scrollIntoView({
+                                block: 'start'
+                            });
+                        }
+                    })
+                } catch (err) {
+                    console.error(err)
+                }
+            },
+
+            updateGrid() {
+                this.$nextTick(() => this.$redrawVueMasonry('classes-detail-images'))
+            },
         }
     }
 </script>
@@ -112,6 +188,8 @@
         width: 100%;
         height: 100%;
         background-color: var(--bg-secondary);
+        display: flex;
+        flex-direction: column;
 
         &__loader {
             width: 100%;
@@ -148,6 +226,7 @@
             display: flex;
             width: 100%;
             overflow: auto;
+            flex-shrink: 0;
             border: {
                 width: 1px 0;
                 style: solid;
@@ -163,7 +242,7 @@
             justify-content: center;
             flex: 1 1 100%;
             min-width: fit-content;
-            padding: 0 64px;
+            padding: 0 24px;
             cursor: pointer;
             height: 46px;
 
@@ -203,6 +282,24 @@
                         color: var(--text-btn-color);
                     }
                 }
+            }
+        }
+
+        &__body {
+            width: 100%;
+            flex: 1 1 100%;
+            overflow: auto;
+
+            &--inner {
+                padding: 24px;
+            }
+        }
+
+        &__images {
+            width: 100%;
+
+            &_item {
+                width: calc(100% / 3);
             }
         }
     }

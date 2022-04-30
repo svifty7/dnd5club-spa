@@ -78,7 +78,7 @@
     >
         <div
             class="nav-item__trigger"
-            @click.left.exact.prevent="toggleSubmenu(navItem.label)"
+            @click.left.exact.prevent="uiStore.toggleSubmenu(navItem.label)"
         >
             <div class="nav-item__icon">
                 <svg-icon :icon-name="`left-menu-${navItem.name}`"/>
@@ -121,7 +121,6 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { mapActions, mapState } from 'pinia/dist/pinia';
     import { useUIStore } from '@/store/UIStore';
 
     export default {
@@ -137,19 +136,16 @@
         },
         data() {
             return {
-                submenuIsVisible: true,
+                submenuIsVisible: false,
                 disabledLinks: false,
+                uiStore: useUIStore(),
             }
         },
         computed: {
-            ...mapState(useUIStore, {
-                menuConfig: 'getMenuConfig',
-            }),
-
             classList() {
                 return {
-                    'is-minified': this.menuConfig.minified,
-                    'is-opened': this.menuConfig.submenu === this.navItem.label,
+                    'is-minified': this.uiStore.getMenuConfig.minified,
+                    'is-opened': this.uiStore.getMenuConfig.submenu === this.navItem.label,
                 }
             },
 
@@ -164,8 +160,6 @@
             },
         },
         methods: {
-            ...mapActions(useUIStore, ['toggleSubmenu']),
-
             setSubmenuPositionClass() {
                 const { submenu } = this.$refs;
 
@@ -185,7 +179,7 @@
                     return;
                 }
 
-                this.toggleSubmenu(this.navItem.label);
+                this.uiStore.toggleSubmenu(this.navItem.label);
             },
 
             isExternalLink(el) {

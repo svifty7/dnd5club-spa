@@ -1,7 +1,7 @@
 <template>
     <div
         class="nav-bar"
-        :class="{'is-minified': menuConfig.minified}"
+        :class="{'is-minified': uiStore.getMenuConfig.minified}"
     >
         <nav-head/>
 
@@ -11,7 +11,7 @@
         >
             <nav class="nav-bar__nav-list">
                 <nav-item
-                    v-for="(item, index) in menuConfig.leftItems"
+                    v-for="(item, index) in uiStore.getMenuConfig.leftItems"
                     :key="index"
                     :to="{ name: item.name }"
                     :nav-item="item"
@@ -28,7 +28,6 @@
 <script>
     import NavHead from '@/components/navigation/NavHead';
     import NavItem from '@/components/navigation/NavItem/NavItem';
-    import { mapActions, mapState } from 'pinia/dist/pinia';
     import NavItemTheme from '@/components/navigation/NavItem/NavItemTheme';
     import { useUIStore } from '@/store/UIStore';
 
@@ -42,12 +41,8 @@
         data() {
             return {
                 isMenuShow: false,
+                uiStore: useUIStore()
             }
-        },
-        computed: {
-            ...mapState(useUIStore, {
-                menuConfig: 'getMenuConfig',
-            }),
         },
         watch: {
             menuConfig: {
@@ -58,13 +53,9 @@
             }
         },
         async beforeCreate() {
-            try {
-                const uiStore = useUIStore();
+            const uiStore = useUIStore();
 
-                await uiStore.getLeftMenuItems();
-            } catch (e) {
-                throw new Error(e)
-            }
+            await uiStore.getLeftMenuItems();
         },
         mounted() {
             window.addEventListener('resize', this.setMenuShowing);
@@ -73,10 +64,6 @@
             window.removeEventListener('resize', this.setMenuShowing);
         },
         methods: {
-            ...mapActions(useUIStore, {
-                toggleMenuSize: 'toggleMenuSize',
-            }),
-
             setMenuShowing() {
                 if (window.innerWidth >= 768) {
                     this.isMenuShow = true;
@@ -84,7 +71,7 @@
                     return
                 }
 
-                this.isMenuShow = this.menuConfig.show;
+                this.isMenuShow = this.uiStore.getMenuConfig.show;
             },
         }
     };

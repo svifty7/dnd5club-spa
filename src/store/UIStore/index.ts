@@ -37,7 +37,7 @@ export const useUIStore = defineStore('UIStore', {
             leftItems: []
         },
         content: {
-            fullscreen: true,
+            fullscreen: false,
         }
     }),
 

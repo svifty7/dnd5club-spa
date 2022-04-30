@@ -91,11 +91,20 @@ export const useClassesStore = defineStore('ClassesStore', {
 
                 this.selectedClass = {
                     ...res.data,
-                    tabs: _.sortBy(res.data.tabs, ['order'])
-                        .map((tab, index) => ({
-                            ...tab,
-                            active: index === 0
-                        }))
+                    tabs: [
+                        ..._.sortBy(res.data.tabs, ['order'])
+                            .map((tab, index) => ({
+                                ...tab,
+                                active: index === 0
+                            })),
+                        {
+                            name: 'Изображения',
+                            icon: 'tab-images',
+                            active: false,
+                            content: res.data.images,
+                            order: res.data.tabs.length
+                        }
+                    ]
                 };
             } catch (err) {
                 console.error(err);
