@@ -21,14 +21,14 @@
                 v-if="showRightSide"
                 class="content-layout__selected"
             >
-                <router-view :key="$route.fullPath"/>
+                <router-view/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import { useUIStore } from '@/store/UIStore';
+    import { useUIStore } from '@/store/UIStore/UIStore';
 
     export default {
         name: 'ContentLayout',

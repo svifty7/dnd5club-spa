@@ -9,14 +9,14 @@
         @mouseleave="setSubmenuPositionClass"
     >
         <div
-            class="nav-item"
             v-bind="$attrs"
+            class="nav-item"
             :class="{'router-link-active': isActive, ...classList}"
         >
-            <a
-                :href="href"
+            <div
+                v-if="hasChildren"
                 class="nav-item__trigger"
-                @click.left.prevent.exact="handleTriggerClick(navigate)"
+                @click.left.exact.prevent="uiStore.toggleSubmenu(navItem.label)"
             >
                 <div class="nav-item__icon">
                     <svg-icon :icon-name="`left-menu-${navItem.name}`"/>
@@ -26,11 +26,23 @@
                     {{ navItem.label }}
                 </div>
 
-                <div
-                    v-if="hasChildren"
-                    class="nav-item__arrow"
-                >
+                <div class="nav-item__arrow">
                     <svg-icon icon-name="arrow-stroke"/>
+                </div>
+            </div>
+
+            <a
+                v-else
+                :href="href"
+                class="nav-item__trigger"
+                @click="navigate"
+            >
+                <div class="nav-item__icon">
+                    <svg-icon :icon-name="`left-menu-${navItem.name}`"/>
+                </div>
+
+                <div class="nav-item__name">
+                    {{ navItem.label }}
                 </div>
             </a>
 
@@ -120,8 +132,9 @@
 </template>
 
 <script>
+    import { RouterLink } from 'vue-router'
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { useUIStore } from '@/store/UIStore';
+    import { useUIStore } from '@/store/UIStore/UIStore';
 
     export default {
         name: 'NavItem',
@@ -133,6 +146,7 @@
                 default: () => ({}),
                 required: true
             },
+            ...RouterLink.props
         },
         data() {
             return {
@@ -170,16 +184,6 @@
                 const rect = submenu.getBoundingClientRect();
 
                 this.submenuIsVisible = rect.bottom + 16 < window.innerHeight;
-            },
-
-            handleTriggerClick(callback) {
-                if (!this.hasChildren) {
-                    callback();
-
-                    return;
-                }
-
-                this.uiStore.toggleSubmenu(this.navItem.label);
             },
 
             isExternalLink(el) {

@@ -7,15 +7,11 @@
         :to="{ path: raceItem.url }"
     >
         <div
-            v-bind="$attrs"
             ref="raceItem"
+            v-bind="$attrs"
             v-masonry-tile
             class="race-item"
-            :class="{
-                'router-link-active': isActive || $route.fullPath.match(new RegExp(`^${ raceItem.url }`)),
-                'is-race-selected': $route.name === 'raceDetail',
-                'is-green': raceItem.type?.name.toLowerCase() === 'homebrew'
-            }"
+            :class="getParentClasses(isActive)"
         >
             <div class="race-item__content">
                 <div class="race-item__main">
@@ -57,7 +53,7 @@
                     </a>
 
                     <button
-                        v-if="!!raceItem?.subraces?.length"
+                        v-if="hasSubraces"
                         v-tooltip.left="{ content: 'Разновидности' }"
                         type="button"
                         class="race-item__toggle"
@@ -69,7 +65,7 @@
                 </div>
 
                 <div
-                    v-if="!!raceItem?.subraces?.length"
+                    v-if="hasSubraces"
                     :class="{ 'is-active': isOpenedSubraces }"
                     class="race-item__subrace-list"
                 >
@@ -128,7 +124,7 @@
                 default: () => null,
                 required: true
             },
-            ...RouterLink.props,
+            ...RouterLink.props
         },
         data() {
             return {
@@ -146,6 +142,10 @@
 
                 return this.submenu.show
             },
+
+            hasSubraces() {
+                return !!this.raceItem?.subraces?.length
+            },
         },
         watch: {
             submenu: {
@@ -157,7 +157,7 @@
 
             isOpenedSubraces() {
                 this.updateGrid();
-            }
+            },
         },
         mounted() {
             this.$nextTick(() => {
@@ -172,6 +172,14 @@
             this.resizeObserver.unobserve(this.$refs.raceItem);
         },
         methods: {
+            getParentClasses(isActive) {
+                return {
+                    'router-link-active': isActive || this.$route.fullPath.match(new RegExp(`^${ this.raceItem.url }`)),
+                    'is-race-selected': this.$route.name === 'raceDetail',
+                    'is-green': this.raceItem.type?.name.toLowerCase() === 'homebrew'
+                }
+            },
+
             toggleSubrace() {
                 this.submenu.show = !this.submenu.show;
             },

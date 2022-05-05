@@ -1,5 +1,7 @@
 <template>
-    spell detail
+    <div class="spell-detail">
+        spell detail
+    </div>
 </template>
 
 <script>

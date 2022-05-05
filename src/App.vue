@@ -1,21 +1,30 @@
 <template>
-    <default-layout/>
+    <div
+        id="dnd5club"
+        class="dnd5club"
+    >
+        <nav-bar/>
+
+        <div class="content">
+            <router-view/>
+        </div>
+    </div>
 </template>
 
 <script>
-    import DefaultLayout from '@/views/_layout/DefaultLayout';
-    import { mapActions, mapState } from 'pinia/dist/pinia';
-    import { useUIStore } from '@/store/UIStore';
+    import { mapActions } from 'pinia/dist/pinia';
+    import { useUIStore } from '@/store/UIStore/UIStore';
+    import NavBar from '@/components/navigation/NavBar';
 
     export default {
         name: 'App',
         components: {
-            DefaultLayout
+            NavBar,
         },
         computed: {
-            ...mapState(useUIStore, {
-                theme: 'getTheme',
-            }),
+            routeInfo() {
+                return this.$route
+            }
         },
         mounted() {
             this.setTheme();
@@ -27,9 +36,26 @@
             });
         },
         methods: {
-            ...mapActions(useUIStore, {
-                setTheme: 'setTheme'
-            }),
+            ...mapActions(useUIStore, ['setTheme']),
         }
     };
 </script>
+
+<style lang="scss" scoped>
+    .dnd5club {
+        display: flex;
+        flex-direction: column-reverse;
+        width: 100%;
+
+        @include media-min($md) {
+            flex-direction: row;
+        }
+
+        .content {
+            width: 100%;
+            position: relative;
+            max-width: 1320px;
+            margin: 0 auto;
+        }
+    }
+</style>

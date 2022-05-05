@@ -1,5 +1,5 @@
 <template>
-    <div class="class-detail">
+    <div class="race-detail">
         <section-header
             :title="currentRace.name.rus"
             :subtitle="currentRace.name.eng"
@@ -12,7 +12,7 @@
 
 <script>
     import SectionHeader from '@/components/SectionHeader';
-    import { useRacesStore } from '@/store/Character/RacesStore';
+    import { useRacesStore } from '@/store/CharacterStore/RacesStore';
 
     export default {
         name: 'RaceDetail',

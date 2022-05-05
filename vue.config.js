@@ -5,7 +5,7 @@ module.exports = {
         ? '/dnd5club-spa/'
         : '/',
     filenameHashing: true,
-    runtimeCompiler: true,
+    runtimeCompiler: false,
     productionSourceMap: false,
     transpileDependencies: true,
     chainWebpack: config => {

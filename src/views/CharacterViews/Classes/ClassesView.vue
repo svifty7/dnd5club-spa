@@ -21,8 +21,8 @@
                 <class-item
                     v-for="(el, key) in classesStore.getClasses"
                     :key="key"
-                    :to="{ path: el.url }"
                     :class-item="el"
+                    :to="{ path: el.url }"
                 />
             </div>
         </template>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    import { useClassesStore } from '@/store/Character/ClassesStore';
+    import { useClassesStore } from '@/store/CharacterStore/ClassesStore';
     import ClassItem from '@/views/CharacterViews/Classes/ClassItem';
     import ListFilter from '@/components/filter/ListFilter';
     import FilterItemSource from '@/components/filter/FilterItem/FilterItemSource';

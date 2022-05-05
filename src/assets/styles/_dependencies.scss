@@ -1,5 +1,5 @@
 @import "normalize.css";
-@import "floating-vue/dist/style.css";
+@import 'floating-vue/dist/style.css';
 
 .v-popper {
   &--theme-tooltip {
@@ -114,6 +114,14 @@
           }
         }
       }
+    }
+  }
+}
+
+.swiper {
+  &:hover {
+    .swiper-scrollbar {
+      opacity: 1 !important;
     }
   }
 }

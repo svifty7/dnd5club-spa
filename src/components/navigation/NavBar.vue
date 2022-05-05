@@ -13,8 +13,8 @@
                 <nav-item
                     v-for="(item, index) in uiStore.getMenuConfig.leftItems"
                     :key="index"
-                    :to="{ name: item.name }"
                     :nav-item="item"
+                    :to="{ name: item.name }"
                 />
             </nav>
 
@@ -29,7 +29,7 @@
     import NavHead from '@/components/navigation/NavHead';
     import NavItem from '@/components/navigation/NavItem/NavItem';
     import NavItemTheme from '@/components/navigation/NavItem/NavItemTheme';
-    import { useUIStore } from '@/store/UIStore';
+    import { useUIStore } from '@/store/UIStore/UIStore';
 
     export default {
         name: 'NavBar',
@@ -51,11 +51,6 @@
                     this.isMenuShow = newValue.show
                 },
             }
-        },
-        async beforeCreate() {
-            const uiStore = useUIStore();
-
-            await uiStore.getLeftMenuItems();
         },
         mounted() {
             window.addEventListener('resize', this.setMenuShowing);

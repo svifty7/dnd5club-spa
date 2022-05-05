@@ -21,7 +21,6 @@
                 <race-item
                     v-for="(el, key) in getRaces"
                     :key="key"
-                    :to="{ path: el.url }"
                     :race-item="el"
                 />
             </div>
@@ -34,15 +33,15 @@
     import FilterItemSource from '@/components/filter/FilterItem/FilterItemSource';
     import FilterItemCheckboxes from '@/components/filter/FilterItem/FilterItemCheckboxes';
     import { mapState } from 'pinia/dist/pinia';
-    import RaceItem from '@/views/CharacterViews/Races/RaceItem';
-    import { useRacesStore } from '@/store/Character/RacesStore';
+    import { useRacesStore } from '@/store/CharacterStore/RacesStore';
     import ContentLayout from '@/components/content/ContentLayout';
+    import RaceItem from '@/views/CharacterViews/Races/RaceItem';
 
     export default {
         name: 'RacesView',
         components: {
-            ContentLayout,
             RaceItem,
+            ContentLayout,
             FilterItemCheckboxes,
             FilterItemSource,
             ListFilter,

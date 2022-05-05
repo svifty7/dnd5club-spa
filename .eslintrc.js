@@ -6,7 +6,6 @@ module.exports = {
     extends: [
         'plugin:vue/vue3-recommended',
         '@vue/airbnb',
-        '@vue/typescript/recommended'
     ],
     parserOptions: {
         ecmaVersion: 2020,
@@ -152,46 +151,6 @@ module.exports = {
         'vuejs-accessibility/label-has-for': 'off',
     },
     overrides: [
-        {
-            files: ['**/*.ts', '**/*.tsx', '**/*.ts.vue'],
-            env: {
-                browser: true,
-                es6: true,
-                node: true
-            },
-            extends: [
-                'eslint:recommended',
-                'plugin:@typescript-eslint/eslint-recommended',
-                'plugin:@typescript-eslint/recommended'
-            ],
-            globals: {
-                Atomics: 'readonly',
-                SharedArrayBuffer: 'readonly',
-                $: 'readonly'
-            },
-            parser: 'vue-eslint-parser',
-            parserOptions: {
-                parser: '@typescript-eslint/parser',
-                ecmaFeatures: { jsx: true },
-                ecmaVersion: 2020,
-                sourceType: 'module',
-                project: './tsconfig.json',
-                extraFileExtensions: ['.ts.vue'],
-                // https://github.com/typescript-eslint/typescript-eslint/issues/967
-                createDefaultProgram: true
-            },
-            plugins: ['vue', '@typescript-eslint'],
-            rules: {
-                'no-shadow': 'off',
-                '@typescript-eslint/no-shadow': ['error'],
-                '@typescript-eslint/no-explicit-any': [
-                    0
-                ],
-                '@typescript-eslint/no-non-null-assertion': [
-                    0
-                ]
-            }
-        },
         {
             files: ['*.vue'],
             rules: {

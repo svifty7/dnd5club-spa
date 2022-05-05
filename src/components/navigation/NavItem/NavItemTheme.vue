@@ -33,7 +33,7 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { useUIStore } from '@/store/UIStore/index.ts';
+    import { useUIStore } from '@/store/UIStore/UIStore';
     import { mapActions, mapState } from 'pinia/dist/pinia';
 
     export default {

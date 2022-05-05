@@ -4,17 +4,6 @@
         :class="{'is-minified': menuConfig.minified}"
     >
         <router-link
-            v-if="false"
-            :to="{ name: 'login' }"
-            class="nav-head__login"
-        >
-            <svg-icon
-                icon-name="login"
-                size="24"
-            />
-        </router-link>
-
-        <router-link
             :to="{name: 'home'}"
             class="nav-head__logo"
         >
@@ -49,7 +38,7 @@
     import SvgIcon from '@/components/UI/SvgIcon';
     import SiteLogo from '@/components/UI/SiteLogo';
     import { mapActions, mapState } from 'pinia/dist/pinia';
-    import { useUIStore } from '@/store/UIStore';
+    import { useUIStore } from '@/store/UIStore/UIStore';
 
     export default {
         name: 'NavHead',

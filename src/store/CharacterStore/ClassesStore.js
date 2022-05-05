@@ -1,31 +1,27 @@
 import { defineStore } from 'pinia';
 import HTTPService from '@/utils/HTTPService';
 import _ from 'lodash';
-import NCharacterRace from '@/types/RaceJson';
-
-interface IState {
-    races: NCharacterRace.IRace[]
-    selectedRace: NCharacterRace.IRace | undefined
-}
 
 const http = new HTTPService();
 
 // eslint-disable-next-line import/prefer-default-export
-export const useRacesStore = defineStore('RacesStore', {
-    state: (): IState => ({
-        races: [],
-        selectedRace: undefined
+export const useClassesStore = defineStore('ClassesStore', {
+    state: () => ({
+        classes: [],
+        selectedClass: undefined,
+        selectedArchetype: undefined,
     }),
 
     getters: {
-        getRaces: state => state.races,
-        getCurrentRace: state => state.selectedRace
+        getClasses: state => state.classes,
+        getCurrentClass: state => state.selectedClass,
+        getCurrentArchetype: state => state.selectedArchetype
     },
 
     actions: {
-        async initRaceList(): Promise<void> {
+        async initClassList() {
             try {
-                const res = await http.get('/races');
+                const res = await http.get('/classes');
 
                 if (res.status !== 200) {
                     console.error(res.statusText);
@@ -34,10 +30,10 @@ export const useRacesStore = defineStore('RacesStore', {
                 }
 
                 const result = [];
-                const sort = (list: NCharacterRace.ISubRace[]) => {
-                    const types = list.map(subrace => subrace.type);
+                const sort = list => {
+                    const types = list.map(arch => arch.type);
                     const typesSorted = _.uniqWith(_.sortBy(types, ['order']), _.isEqual);
-                    const formatted: any = [];
+                    const formatted = [];
 
                     let index = 0;
 
@@ -50,7 +46,7 @@ export const useRacesStore = defineStore('RacesStore', {
 
                         formatted[index - 1].push({
                             name: typesSorted[i].name,
-                            list: list.filter(subrace => subrace.type.name === typesSorted[i].name)
+                            list: list.filter(arch => arch.type.name === typesSorted[i].name)
                         });
                     }
 
@@ -58,30 +54,24 @@ export const useRacesStore = defineStore('RacesStore', {
                 }
 
                 for (let i = 0; i < res.data.length; i++) {
-                    if ('subraces' in res.data[i]) {
-                        result.push({
-                            ...res.data[i],
-                            subraces: sort(res.data[i].subraces),
-                        });
-
-                        continue;
-                    }
-
-                    result.push({ ...res.data[i] })
+                    result.push({
+                        ...res.data[i],
+                        archetypes: sort(res.data[i].archetypes),
+                    })
                 }
 
-                this.races = result
+                this.classes = result;
             } catch (err) {
                 console.error(err);
             }
         },
 
-        async setRaceInfo(raceName: string, subrace?: string): Promise<void> {
+        async setClassInfo(className, archName) {
             try {
-                let url = `/races/${ raceName }`;
+                let url = `/classes/${ className }`;
 
-                if (subrace) {
-                    url += `/${ subrace }`;
+                if (archName) {
+                    url += `/${ archName }`;
                 }
 
                 const res = await http.get(url);
@@ -92,7 +82,7 @@ export const useRacesStore = defineStore('RacesStore', {
                     return;
                 }
 
-                this.selectedRace = {
+                this.selectedClass = {
                     ...res.data,
                     tabs: _.sortBy(res.data.tabs, ['order'])
                         .map((tab, index) => ({
@@ -105,8 +95,8 @@ export const useRacesStore = defineStore('RacesStore', {
             }
         },
 
-        deselectRace() {
-            this.selectedRace = undefined;
+        deselectClass() {
+            this.selectedClass = undefined;
         }
     }
 });

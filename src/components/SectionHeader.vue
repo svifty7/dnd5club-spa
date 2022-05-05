@@ -77,7 +77,7 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
-    import { useUIStore } from '@/store/UIStore';
+    import { useUIStore } from '@/store/UIStore/UIStore';
 
     export default {
         name: 'SectionHeader',

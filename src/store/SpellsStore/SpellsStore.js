@@ -1,17 +1,11 @@
 import { defineStore } from 'pinia';
-import { AxiosResponse } from 'axios';
 import HTTPService from '@/utils/HTTPService';
-import NSpell from '@/types/SpellJson';
-
-export interface ISpellsStore {
-    spells: NSpell.ISpell[]
-    selectedSpell: NSpell.ISpell | undefined
-}
 
 const http = new HTTPService();
 
+// eslint-disable-next-line import/prefer-default-export
 export const useSpellsStore = defineStore('SpellsStore', {
-    state: (): ISpellsStore => ({
+    state: () => ({
         spells: [],
         selectedSpell: undefined
     }),
@@ -24,7 +18,7 @@ export const useSpellsStore = defineStore('SpellsStore', {
     actions: {
         async getSpellList() {
             try {
-                const apiOptions: NSpell.IRequest = {
+                const apiOptions = {
                     page: 1,
                     limit: 30,
                     search: {
@@ -39,7 +33,7 @@ export const useSpellsStore = defineStore('SpellsStore', {
                         direction: 'asc'
                     }]
                 };
-                const resp: AxiosResponse = await http.post('/spells', apiOptions);
+                const resp = await http.post('/spells', apiOptions);
 
                 this.spells = resp.data;
             } catch (err) {

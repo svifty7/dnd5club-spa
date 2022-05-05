@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import '@/common/utils/SvgRequire.ts';
+    import '@/common/utils/SvgRequire';
 
     export default {
         name: 'SvgIcon',

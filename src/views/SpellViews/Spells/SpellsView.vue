@@ -19,7 +19,6 @@
                         <spell-item
                             v-for="(el, key) in computedSpells"
                             :key="key"
-                            :to="getRouterLinkInfo(el)"
                             :spell-item="el"
                         />
                     </div>
@@ -38,7 +37,7 @@
 
 <script>
     import { mapActions, mapState } from 'pinia/dist/pinia';
-    import { useSpellsStore } from '@/store/SpellsStore/index.ts';
+    import { useSpellsStore } from '@/store/SpellsStore/SpellsStore';
     import ListFilter from '@/components/filter/ListFilter';
     import FilterItemSource from '@/components/filter/FilterItem/FilterItemSource';
     import FilterItemCheckboxes from '@/components/filter/FilterItem/FilterItemCheckboxes';

@@ -11,26 +11,31 @@
             fullscreen
         />
 
-        <div
-            v-if="tabs.length"
+        <swiper
+            v-if="tabs.list.length"
             class="class-detail__tabs"
+            :scrollbar="{ draggable: true, hide: true, snapOnRelease: true }"
+            :slides-per-view="'auto'"
+            :mousewheel="false"
+            :free-mode="true"
+            :modules="tabs.modules"
         >
-            <button
-                v-for="(tab, tabKey) in tabs"
+            <swiper-slide
+                v-for="(tab, tabKey) in tabs.list"
                 :key="tabKey"
                 class="class-detail__tab"
-                :class="{ 'is-active': currentTab.name === tab.name }"
-                @click.left.exact.prevent="setTab(tabKey)"
+                :class="{ 'is-active': currentTab?.name === tab.name }"
+                @click.left.exact.prevent="clickTabHandler({ index: tabKey, callback: tab.callback })"
             >
-                <span class="class-detail__tab_icon">
+                <div class="class-detail__tab_icon">
                     <svg-icon :icon-name="tab.icon"/>
-                </span>
+                </div>
 
-                <span class="class-detail__tab_name">
+                <div class="class-detail__tab_name">
                     {{ tab.name }}
-                </span>
-            </button>
-        </div>
+                </div>
+            </swiper-slide>
+        </swiper>
 
         <div
             v-if="currentTab?.content"
@@ -64,6 +69,21 @@
         </div>
     </div>
 
+    <swiper
+        v-if="images.show"
+    >
+        <swiper-slide
+            v-for="(image, imageKey) in currentClass.images"
+            :key="imageKey"
+        >
+            <img
+                :data-src="image"
+                alt=""
+                src=""
+            >
+        </swiper-slide>
+    </swiper>
+
     <div
         v-show="loading"
         class="class-detail"
@@ -80,16 +100,22 @@
 </template>
 
 <script>
-    import { useClassesStore } from '@/store/Character/ClassesStore.ts';
     import SectionHeader from '@/components/SectionHeader';
     import SvgIcon from '@/components/UI/SvgIcon';
     import HTTPService from '@/utils/HTTPService';
+    import { Swiper, SwiperSlide } from 'swiper/vue';
+    import {
+        A11y, FreeMode, Lazy, Mousewheel, Scrollbar
+    } from 'swiper';
+    import { useClassesStore } from '@/store/CharacterStore/ClassesStore';
 
     export default {
         name: 'ClassDetail',
         components: {
             SvgIcon,
-            SectionHeader
+            SectionHeader,
+            Swiper,
+            SwiperSlide,
         },
         beforeRouteUpdate(to, from, next) {
             this.loading = true;
@@ -113,7 +139,14 @@
             classesStore: useClassesStore(),
             loading: true,
             currentTab: undefined,
-            tabs: [],
+            tabs: {
+                list: [],
+                modules: [FreeMode, Scrollbar, Mousewheel, A11y]
+            },
+            images: {
+                show: false,
+                modules: [Lazy]
+            }
         }),
         computed: {
             urlForCopy() {
@@ -122,13 +155,25 @@
 
             currentClass() {
                 return this.classesStore.getCurrentClass
-            }
+            },
         },
         async beforeMount() {
-            this.tabs = this.currentClass.tabs.map(tab => ({
+            this.tabs.list = this.currentClass.tabs.map(tab => ({
                 ...tab,
-                content: tab.content || undefined
+                content: undefined
             }));
+
+            if (this.currentClass?.images) {
+                this.tabs.list.push({
+                    name: 'Изображения',
+                    icon: 'tab-images',
+                    active: false,
+                    order: this.tabs.length,
+                    callback: () => {
+                        this.images.show = true
+                    }
+                })
+            }
 
             await this.setTab(0);
 
@@ -139,9 +184,22 @@
                 this.$router.push({ name: 'classes' });
             },
 
+            async clickTabHandler({
+                index,
+                callback
+            }) {
+                if (typeof callback === 'function') {
+                    callback();
+
+                    return;
+                }
+
+                await this.setTab(index);
+            },
+
             async setTab(index) {
                 try {
-                    const tab = this.tabs[index];
+                    const tab = this.tabs.list[index];
 
                     if (!tab.content) {
                         let res;
@@ -225,7 +283,6 @@
         &__tabs {
             display: flex;
             width: 100%;
-            overflow: auto;
             flex-shrink: 0;
             border: {
                 width: 1px 0;
@@ -240,11 +297,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 1 1 100%;
-            min-width: fit-content;
             padding: 0 24px;
             cursor: pointer;
             height: 46px;
+            flex: 1 1 100%;
+            min-width: fit-content;
 
             & + & {
                 border-left: 1px solid var(--border);

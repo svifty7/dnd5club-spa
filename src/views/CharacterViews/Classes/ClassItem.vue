@@ -1,8 +1,8 @@
 <template>
     <router-link
         v-slot="{href, navigate, isActive}"
-        v-bind="$props"
         custom
+        v-bind="$props"
         :to="{ path: classItem.url }"
     >
         <div
@@ -56,7 +56,7 @@
                     </a>
 
                     <button
-                        v-if="!!classItem?.archetypes?.length"
+                        v-if="hasArchetypes"
                         v-tooltip.left="{ content: 'Архетипы' }"
                         type="button"
                         class="class-item__toggle"
@@ -68,7 +68,7 @@
                 </div>
 
                 <div
-                    v-if="!!classItem?.archetypes?.length"
+                    v-if="hasArchetypes"
                     :class="{ 'is-active': isOpenedArchetypes }"
                     class="class-item__arch-list"
                 >
@@ -115,8 +115,8 @@
 </template>
 
 <script>
-    import SvgIcon from '@/components/UI/SvgIcon';
     import { RouterLink } from 'vue-router';
+    import SvgIcon from '@/components/UI/SvgIcon';
 
     export default {
         name: 'ClassItem',
@@ -128,7 +128,7 @@
                 default: () => null,
                 required: true
             },
-            ...RouterLink.props,
+            ...RouterLink.props
         },
         data() {
             return {
@@ -146,6 +146,10 @@
 
                 return this.submenu.show
             },
+
+            hasArchetypes() {
+                return !!this.classItem?.archetypes?.length
+            }
         },
         watch: {
             isOpenedArchetypes() {
