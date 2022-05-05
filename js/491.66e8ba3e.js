@@ -1,1 +1,0 @@
-"use strict";(self["webpackChunkdnd5club_spa"]=self["webpackChunkdnd5club_spa"]||[]).push([[491],{4491:function(n,e,c){c.r(e),c.d(e,{default:function(){return d}});var s=c(9199);const a={class:"magic-items"};function t(n,e,c,t,i,u){return(0,s.wg)(),(0,s.iD)("div",a," magic-items ")}var i={name:"MagicItemsView"},u=c(89);const r=(0,u.Z)(i,[["render",t]]);var d=r}}]);

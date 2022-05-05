@@ -1,1 +1,0 @@
-"use strict";(self["webpackChunkdnd5club_spa"]=self["webpackChunkdnd5club_spa"]||[]).push([[782],{1782:function(r,e,n){n.r(e),n.d(e,{default:function(){return i}});var u=n(9437),a={class:"treasury"};function s(r,e,n,s,t,c){return(0,u.wg)(),(0,u.iD)("div",a," treasury ")}var t={name:"TreasuryView"},c=n(89);const d=(0,c.Z)(t,[["render",s]]);var i=d}}]);

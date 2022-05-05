@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkdnd5club_spa"]=self["webpackChunkdnd5club_spa"]||[]).push([[276],{276:function(n,e,s){s.r(e),s.d(e,{default:function(){return o}});var a=s(3396);const u={class:"weapons"};function c(n,e,s,c,r,t){return(0,a.wg)(),(0,a.iD)("div",u," weapons ")}var r={name:"WeaponsView"},t=s(89);const d=(0,t.Z)(r,[["render",c]]);var o=d}}]);

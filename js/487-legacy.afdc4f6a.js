@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkdnd5club_spa"]=self["webpackChunkdnd5club_spa"]||[]).push([[487],{56487:function(n,e,u){u.r(e),u.d(e,{default:function(){return i}});var r=u(73396),c={class:"encounters"};function s(n,e,u,s,t,a){return(0,r.wg)(),(0,r.iD)("div",c," encounters ")}var t={name:"EncountersView"},a=u(40089);const d=(0,a.Z)(t,[["render",s]]);var i=d}}]);
