@@ -49,6 +49,8 @@
     color: var(--primary);
 
     svg {
+      @include css_anim();
+
       width: 24px;
       height: 24px;
     }
@@ -68,5 +70,17 @@
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
+  }
+
+  &.is-active {
+    .filter-item {
+      &__button {
+        &--toggle {
+          svg {
+            transform: rotate(-180deg);
+          }
+        }
+      }
+    }
   }
 }

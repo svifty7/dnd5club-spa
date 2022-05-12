@@ -189,7 +189,7 @@ export const useUIStore = defineStore('UIStore', {
         },
 
         setFullscreenState(state) {
-            this.menu.fullscreen = state;
+            this.content.fullscreen = state;
         }
     }
 });

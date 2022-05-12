@@ -1,75 +1,70 @@
 <template>
-    <label
+    <div
         v-if="type === 'crumb'"
         class="field-checkbox field-checkbox--crumb"
+        :class="{'is-active': value}"
+        @click.left.exact.prevent="value = !value"
     >
-        <input
-            type="checkbox"
-            :value="value"
-            @change.prevent="$emit('change')"
-        >
-
-        <span
+        <div
             v-tooltip="tooltip"
             class="field-checkbox__label"
         >
             <slot/>
-        </span>
-    </label>
+        </div>
+    </div>
 
-    <label
+    <div
         v-else-if="type === 'toggle'"
         class="field-checkbox field-checkbox--toggle"
+        :class="{'is-active': value}"
+        @click.left.exact.prevent="value = !value"
     >
-        <input
-            type="checkbox"
-            :value="value"
-            @change.prevent="$emit('change')"
-        >
+        <div class="field-checkbox__faker"/>
 
-        <span class="field-checkbox__faker"/>
-
-        <span
+        <div
             v-if="$slots.default"
             class="field-checkbox__label"
         >
             <slot/>
-        </span>
-    </label>
+        </div>
+    </div>
 </template>
 
 <script>
     export default {
         name: 'FieldCheckbox',
         props: {
-            value: {
+            modelValue: {
                 type: Boolean,
                 default: false,
             },
-
             type: {
                 type: String,
                 default: 'crumb',
                 validator: value => ['crumb', 'toggle'].includes(value)
             },
-
             tooltip: {
                 type: String,
                 default: ''
             }
         },
-        emits: ['change']
+        emits: ['update:model-value'],
+        computed: {
+            value: {
+                get() {
+                    return this.modelValue
+                },
+                set(value) {
+                    this.$emit('update:model-value', value)
+                }
+            }
+        }
     }
 </script>
 
 <style lang="scss" scoped>
     .field-checkbox {
         cursor: pointer;
-
-        input {
-            display: none;
-            opacity: 0;
-        }
 
         &--crumb {
             display: inline-block;
@@ -87,29 +82,22 @@
                 }
             }
 
-            input {
-                &:not(:checked) {
-                    & + .field-checkbox {
-                        &__label {
-                            @include media-min($md) {
-                                &:hover {
-                                    background-color: var(--primary-hover);
-                                    color: var(--text-btn-color);
-                                }
-                            }
-                        }
+            &.is-active {
+                .field-checkbox {
+                    &__label {
+                        @include css_anim();
+
+                        background-color: var(--primary-active);
+                        color: var(--text-btn-color);
                     }
                 }
+            }
 
-                &:checked {
-                    & + .field-checkbox {
-                        &__label {
-                            @include css_anim();
-
-                            display: inline-block;
-                            padding: 4px 8px;
-                            border-radius: 4px;
-                            background-color: var(--primary-active);
+            @include media-min($md) {
+                &:not(.is-active) {
+                    .field-checkbox__label {
+                        &:hover {
+                            background-color: var(--primary-hover);
                             color: var(--text-btn-color);
                         }
                     }
@@ -148,25 +136,23 @@
                 }
             }
 
-            @include media-min($md) {
-                &:hover {
-                    .field-checkbox {
-                        &__faker {
-                            border-color: #aef;
+            &.is-active {
+                .field-checkbox {
+                    &__faker {
+                        background-color: var(--primary);
+
+                        &:after {
+                            transform: translateX(100%);
                         }
                     }
                 }
             }
 
-            input {
-                &:checked {
-                    & + .field-checkbox {
+            @include media-min($md) {
+                &:hover {
+                    .field-checkbox {
                         &__faker {
-                            background-color: var(--primary);
-
-                            &:after {
-                                transform: translateX(100%);
-                            }
+                            border-color: #aef;
                         }
                     }
                 }

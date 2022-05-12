@@ -11,7 +11,7 @@
                         v-model="search"
                         type="text"
                         placeholder="Поиск..."
-                        @change.prevent="$emit('search')"
+                        @input.prevent="$emit('search', search)"
                     >
                 </label>
 
@@ -26,36 +26,50 @@
             </div>
 
             <button
+                v-if="storeKey && !!filter"
                 type="button"
                 class="filter__button"
-                :class="{ 'is-opened': filter.show }"
-                @click.left.exact.prevent="filter.show = !filter.show"
+                :class="{ 'is-opened': showed }"
+                @click.left.exact.prevent="showed = !showed"
             >
                 <svg-icon
-                    icon-name="filter"
-                    :stroke-enable="!filter.show"
-                    :fill-enable="filter.show"
+                    :icon-name="isFilterCustomized ? 'filter-customized' : 'filter'"
+                    :stroke-enable="false"
+                    :fill-enable="true"
                 />
 
                 <span>Фильтр</span>
             </button>
 
             <button
+                v-if="storeKey && !!filter"
                 v-tooltip.bottom-end="'Стереть фильтр'"
                 type="button"
                 class="filter__button"
-                @click.left.exact.prevent="$emit('clear-filter')"
+                @click.left.exact.prevent="resetFilter"
             >
                 <svg-icon icon-name="clear-filter"/>
             </button>
         </div>
 
         <div
-            v-if="filter.show"
+            v-if="showed"
             class="filter__dropdown"
         >
             <div class="filter__dropdown_body">
-                <slot/>
+                <filter-item-sources
+                    v-if="filter?.sources"
+                    :model-value="filter.sources"
+                    @update:model-value="setSourcesValue($event)"
+                />
+
+                <filter-item-checkboxes
+                    v-for="(block, blockKey) in otherFilters"
+                    :key="blockKey"
+                    :model-value="block.values"
+                    :name="block.name"
+                    @update:model-value="setOtherValue($event, blockKey)"
+                />
             </div>
         </div>
     </div>
@@ -63,17 +77,120 @@
 
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
+    import { useFilterStore } from '@/store/FilterStore/FilterStore';
+    import FilterItemSources from '@/components/filter/FilterItem/FilterItemSources';
+    import FilterItemCheckboxes from '@/components/filter/FilterItem/FilterItemCheckboxes';
+    import _ from 'lodash';
 
     export default {
         name: 'ListFilter',
-        components: { SvgIcon },
-        emits: ['clear-filter', 'search'],
+        components: { FilterItemCheckboxes, FilterItemSources, SvgIcon },
+        props: {
+            storeKey: {
+                type: String,
+                default: ''
+            }
+        },
+        emits: ['clear-filter', 'search', 'update'],
         data: () => ({
             search: '',
-            filter: {
-                show: false
+            showed: false,
+            filterStore: useFilterStore(),
+            filter: undefined
+        }),
+        computed: {
+            otherFilters: {
+                get() {
+                    return this.filter?.other || this.filter || [];
+                },
+
+                set(value) {
+                    if (this.filter?.other) {
+                        this.filter.other = _.cloneDeep(value);
+
+                        return
+                    }
+
+                    this.filter = _.cloneDeep(value);
+                }
+            },
+
+            isFilterCustomized() {
+                if (this.filter?.sources) {
+                    for (const group of this.filter.sources) {
+                        for (const value of group.values) {
+                            if (value.value !== value.default) {
+                                return true
+                            }
+                        }
+                    }
+                }
+
+                for (const group of this.otherFilters) {
+                    for (const value of group.values) {
+                        if (value.value !== value.default) {
+                            return true
+                        }
+                    }
+                }
+
+                return false
+            },
+
+            resultQueryParams() {
+                return undefined
+            },
+        },
+        beforeMount() {
+            this.initFilter();
+        },
+        methods: {
+            initFilter() {
+                this.filter = _.cloneDeep(this.filterStore?.getFilters[this.storeKey]);
+            },
+
+            setSourcesValue(value) {
+                this.filter.sources = _.cloneDeep(value);
+
+                this.emitFilter();
+            },
+
+            setOtherValue(value, index) {
+                const otherFilters = _.cloneDeep(this.otherFilters);
+
+                otherFilters[index].values = _.cloneDeep(value);
+
+                this.otherFilters = otherFilters;
+
+                this.emitFilter();
+            },
+
+            resetFilter() {
+                if (this.filter?.sources) {
+                    this.filter.sources = _.cloneDeep(this.filter.sources)
+                        .map(group => ({
+                            ...group,
+                            values: group.values.map(value => ({
+                                ...value,
+                                value: value.default
+                            }))
+                        }));
+                }
+
+                this.otherFilters = _.cloneDeep(this.otherFilters)
+                    .map(group => ({
+                        ...group,
+                        values: group.values.map(value => ({
+                            ...value,
+                            value: value.default
+                        }))
+                    }));
+            },
+
+            emitFilter() {
+                this.$emit('update', this.filter);
             }
-        })
+        }
     }
 </script>
 

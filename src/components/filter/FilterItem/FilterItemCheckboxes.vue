@@ -1,5 +1,8 @@
 <template>
-    <div class="filter-item">
+    <div
+        class="filter-item"
+        :class="{ 'is-active': opened }"
+    >
         <div class="filter-item__header">
             <div
                 class="filter-item__trigger"
@@ -21,6 +24,7 @@
             <button
                 type="button"
                 class="filter-item__button filter-item__button--reset"
+                @click.left.exact.prevent="resetValues"
             >
                 <svg-icon icon-name="close"/>
             </button>
@@ -30,20 +34,14 @@
             v-if="opened"
             class="filter-item__body"
         >
-            <field-checkbox>
-                1d6
-            </field-checkbox>
-
-            <field-checkbox>
-                1d8
-            </field-checkbox>
-
-            <field-checkbox>
-                1d10
-            </field-checkbox>
-
-            <field-checkbox>
-                1d12
+            <field-checkbox
+                v-for="(checkbox, checkboxKey) in modelValue"
+                :key="checkboxKey"
+                :model-value="checkbox.value"
+                :tooltip="checkbox.tooltip"
+                @update:model-value="setValue($event, checkboxKey)"
+            >
+                {{ checkbox.label }}
             </field-checkbox>
         </div>
     </div>
@@ -52,6 +50,7 @@
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
     import FieldCheckbox from '@/components/UI/FieldType/FieldCheckbox';
+    import _ from 'lodash';
 
     export default {
         name: 'FilterItemCheckboxes',
@@ -65,14 +64,38 @@
                 default: '',
                 required: true
             },
-            options: {
-                type: Object,
-                default: () => ({})
+            modelValue: {
+                type: Array,
+                default: undefined
             }
         },
+        emits: ['update:model-value'],
         data: () => ({
             opened: false
-        })
+        }),
+        methods: {
+            resetValues() {
+                const values = _.cloneDeep(this.modelValue)
+                    .map(value => ({
+                        ...value,
+                        value: value.default
+                    }));
+
+                this.emitValues(values);
+            },
+
+            setValue(newValue, index) {
+                const values = _.cloneDeep(this.modelValue);
+
+                values[index].value = newValue;
+
+                this.emitValues(values);
+            },
+
+            emitValues(values) {
+                this.$emit('update:model-value', values);
+            }
+        }
     }
 </script>
 

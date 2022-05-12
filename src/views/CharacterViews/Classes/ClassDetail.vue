@@ -39,12 +39,51 @@
 
         <div
             v-if="currentTab?.content"
+            ref="classBody"
             class="class-detail__body"
         >
             <div
-                ref="classBody"
-                class="class-detail__body--inner"
+                v-if="currentArchetypes.length && currentTab.name === 'Навыки'"
+                class="class-detail__select"
             >
+                <field-select
+                    :model-value="currentSelectArchetype"
+                    :options="currentArchetypes"
+                    group-values="list"
+                    group-label="group"
+                    :group-select="false"
+                    track-by="url"
+                    label="name"
+                >
+                    <template #option="{ option }">
+                        <div
+                            v-if="option?.group"
+                            class="class-detail__select_option"
+                        >
+                            <span class="class-detail__select_option--name">{{ option.group }}</span>
+                        </div>
+
+                        <router-link
+                            v-else-if="option?.name"
+                            :to="option.url"
+                            class="class-detail__select_option"
+                        >
+                            <span class="class-detail__select_option--name">{{ option.name }}</span>
+
+                            <span
+                                v-if="option?.source"
+                                class="class-detail__select_option--source"
+                            >[{{ option.source }}]</span>
+                        </router-link>
+                    </template>
+
+                    <template #placeholder>
+                        --- Архетипы ---
+                    </template>
+                </field-select>
+            </div>
+
+            <div class="class-detail__body--inner">
                 <!-- eslint-disable vue/no-v-html -->
                 <div
                     v-if="currentTab.raw"
@@ -69,20 +108,18 @@
         </div>
     </div>
 
-    <swiper
-        v-if="images.show"
+    <vue-easy-lightbox
+        v-if="currentClass?.images"
+        scroll-disabled
+        move-disabled
+        loop
+        :visible="images.show"
+        :imgs="currentClass.images"
+        :index="images.index"
+        @hide="images.show = false"
     >
-        <swiper-slide
-            v-for="(image, imageKey) in currentClass.images"
-            :key="imageKey"
-        >
-            <img
-                :data-src="image"
-                alt=""
-                src=""
-            >
-        </swiper-slide>
-    </swiper>
+        <template #toolbar/>
+    </vue-easy-lightbox>
 
     <div
         v-show="loading"
@@ -105,13 +142,15 @@
     import HTTPService from '@/utils/HTTPService';
     import { Swiper, SwiperSlide } from 'swiper/vue';
     import {
-        A11y, FreeMode, Lazy, Mousewheel, Scrollbar
+        A11y, FreeMode, Mousewheel, Scrollbar
     } from 'swiper';
     import { useClassesStore } from '@/store/CharacterStore/ClassesStore';
+    import FieldSelect from '@/components/UI/FieldType/FieldSelect';
 
     export default {
         name: 'ClassDetail',
         components: {
+            FieldSelect,
             SvgIcon,
             SectionHeader,
             Swiper,
@@ -123,15 +162,17 @@
             const store = useClassesStore();
 
             store.deselectClass();
-            store.setClassInfo(to.params.className, to.params?.classArchetype)
+            store.classInfoQuery(to.params.className, to.params?.classArchetype)
                 .then(async () => {
                     this.loading = false;
+
+                    await this.initTabs();
                     await this.setTab(0);
 
                     next();
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.error(err)
                 });
         },
         data: () => ({
@@ -145,7 +186,7 @@
             },
             images: {
                 show: false,
-                modules: [Lazy]
+                index: 0,
             }
         }),
         computed: {
@@ -154,32 +195,54 @@
             },
 
             currentClass() {
-                return this.classesStore.getCurrentClass
+                return this.classesStore.getCurrentClass || undefined
+            },
+
+            currentSelectArchetype() {
+                let selected;
+
+                for (let i = 0; i < this.currentArchetypes.length && !selected; i++) {
+                    for (let index = 0; index < this.currentArchetypes[i].list.length && !selected; index++) {
+                        if (this.currentArchetypes[i].list[index].url === this.$route.fullPath) {
+                            selected = this.currentArchetypes[i].list[index];
+                        }
+                    }
+                }
+
+                return selected;
+            },
+
+            currentArchetypes() {
+                return this.classesStore.getCurrentArchetypes || undefined
             },
         },
         async beforeMount() {
-            this.tabs.list = this.currentClass.tabs.map(tab => ({
-                ...tab,
-                content: undefined
-            }));
-
-            if (this.currentClass?.images) {
-                this.tabs.list.push({
-                    name: 'Изображения',
-                    icon: 'tab-images',
-                    active: false,
-                    order: this.tabs.length,
-                    callback: () => {
-                        this.images.show = true
-                    }
-                })
-            }
-
-            await this.setTab(0);
+            await this.initTabs();
 
             this.loading = false;
         },
         methods: {
+            async initTabs() {
+                this.tabs.list = this.currentClass.tabs.map(tab => ({
+                    ...tab,
+                    content: undefined
+                }));
+
+                if (this.currentClass?.images) {
+                    this.tabs.list.push({
+                        name: 'Изображения',
+                        icon: 'tab-images',
+                        active: false,
+                        order: this.tabs.length,
+                        callback: () => {
+                            this.images.show = true
+                        }
+                    })
+                }
+
+                await this.setTab(0);
+            },
+
             closeClass() {
                 this.$router.push({ name: 'classes' });
             },
@@ -197,18 +260,26 @@
                 await this.setTab(index);
             },
 
+            async getTabContent(tab) {
+                let res;
+
+                if (tab.raw) {
+                    res = await this.http.rawGet(tab.url);
+
+                    return res;
+                }
+
+                res = await this.http.get(tab.url);
+
+                return res;
+            },
+
             async setTab(index) {
                 try {
                     const tab = this.tabs.list[index];
 
                     if (!tab.content) {
-                        let res;
-
-                        if (tab.raw) {
-                            res = await this.http.rawGet(tab.url)
-                        } else {
-                            res = await this.http.get(tab.url);
-                        }
+                        const res = await this.getTabContent(tab);
 
                         if (res.status !== 200) {
                             console.error(res.statusText);
@@ -338,6 +409,36 @@
                     &_name {
                         color: var(--text-btn-color);
                     }
+                }
+            }
+        }
+
+        &__select {
+            ::v-deep(.dnd5club-select) {
+                .multiselect {
+                    &__tags {
+                        border-top: 0;
+                    }
+                }
+            }
+
+            &_option {
+                background-color: transparent;
+                color: inherit;
+                padding: 12px;
+                width: 100%;
+                display: block;
+                min-height: 40px;
+                text-decoration: none;
+                text-transform: none;
+                vertical-align: middle;
+                position: absolute;
+                left: 0;
+                top: 0;
+
+                &--source {
+                    margin-left: 4px;
+                    color: var(--text-g-color);
                 }
             }
         }

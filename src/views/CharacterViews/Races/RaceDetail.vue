@@ -23,7 +23,7 @@
             const store = useRacesStore();
 
             store.deselectRace();
-            store.setRaceInfo(to.params.raceName, to.params?.subrace)
+            store.raceInfoQuery(to.params.raceName, to.params?.subrace)
                 .then(() => {
                     this.loading = false;
                     this.setTab(0);
@@ -31,13 +31,12 @@
                     next();
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.error(err)
                 });
         },
         data: () => ({
             raceStore: useRacesStore(),
             loading: false,
-            currentTab: undefined
         }),
         computed: {
             currentRace() {

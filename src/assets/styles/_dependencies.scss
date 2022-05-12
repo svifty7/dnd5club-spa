@@ -1,5 +1,6 @@
 @import "normalize.css";
 @import 'floating-vue/dist/style.css';
+@import "vue-multiselect/dist/vue-multiselect.css";
 
 .v-popper {
   &--theme-tooltip {
@@ -122,6 +123,15 @@
   &:hover {
     .swiper-scrollbar {
       opacity: 1 !important;
+    }
+  }
+}
+
+.vel-modal {
+  .vel-img-wrapper {
+    .vel-img {
+      background-color: transparent;
+      box-shadow: none;
     }
   }
 }

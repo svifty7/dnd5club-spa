@@ -17,9 +17,9 @@ export const useRacesStore = defineStore('RacesStore', {
     },
 
     actions: {
-        async initRaceList() {
+        async racesQuery() {
             try {
-                const res = await http.get('/races');
+                const res = await http.post('/races');
 
                 if (res.status !== 200) {
                     console.error(res.statusText);
@@ -70,7 +70,7 @@ export const useRacesStore = defineStore('RacesStore', {
             }
         },
 
-        async setRaceInfo(raceName, subrace) {
+        async raceInfoQuery(raceName, subrace) {
             try {
                 let url = `/races/${ raceName }`;
 
@@ -78,7 +78,7 @@ export const useRacesStore = defineStore('RacesStore', {
                     url += `/${ subrace }`;
                 }
 
-                const res = await http.get(url);
+                const res = await http.post(url);
 
                 if (res.status !== 200) {
                     console.error(res.statusText);

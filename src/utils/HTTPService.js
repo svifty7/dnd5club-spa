@@ -2,17 +2,17 @@ import axios from 'axios';
 
 export default class HTTPService {
     constructor() {
-        this.axios = axios.create({
+        this.instance = axios.create({
             baseURL: `${ process.env.VUE_APP_API_URL }/api/v1`
         });
 
-        this.rawAxios = axios.create({
+        this.instanceRaw = axios.create({
             baseURL: process.env.VUE_APP_API_URL
         });
     }
 
     async post(url, data) {
-        return this.axios({
+        return this.instance({
             url,
             data,
             method: 'post',
@@ -20,17 +20,17 @@ export default class HTTPService {
     }
 
     async get(url, params) {
-        return this.axios({
+        return this.instance({
             url,
-            params,
+            params: new URLSearchParams(params).toString(),
             method: 'get',
         })
     }
 
     async rawGet(url, params) {
-        return this.rawAxios({
+        return this.instanceRaw({
             url,
-            params,
+            params: new URLSearchParams(params).toString(),
             method: 'get',
         })
     }

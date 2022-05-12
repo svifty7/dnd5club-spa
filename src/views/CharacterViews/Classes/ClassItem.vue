@@ -10,11 +10,7 @@
             ref="classItem"
             v-masonry-tile
             class="class-item"
-            :class="{
-                'router-link-active': isActive || $route.fullPath.match(new RegExp(`^${ classItem.url }`)),
-                'is-class-selected': $route.name === 'classDetail',
-                'is-green': false
-            }"
+            :class="getClassList(isActive)"
         >
             <div class="class-item__content">
                 <div class="class-item__main">
@@ -117,25 +113,25 @@
 <script>
     import { RouterLink } from 'vue-router';
     import SvgIcon from '@/components/UI/SvgIcon';
+    import { useResizeObserver } from '@vueuse/core/index';
 
     export default {
         name: 'ClassItem',
         components: { SvgIcon },
         inheritAttrs: false,
         props: {
+            ...RouterLink.props,
             classItem: {
                 type: Object,
                 default: () => null,
                 required: true
             },
-            ...RouterLink.props
         },
         data() {
             return {
                 submenu: {
                     show: false
                 },
-                resizeObserver: null,
             }
         },
         computed: {
@@ -158,17 +154,19 @@
         },
         mounted() {
             this.$nextTick(() => {
-                this.resizeObserver = new ResizeObserver(this.updateGrid);
-
-                this.resizeObserver.observe(this.$refs.classItem);
-
-                this.updateGrid()
+                useResizeObserver(this.$refs.classItem, this.updateGrid);
             });
         },
-        beforeUnmount() {
-            this.resizeObserver.unobserve(this.$refs.classItem);
-        },
         methods: {
+            getClassList(isActive) {
+                return {
+                    'router-link-active': isActive
+                        || this.$route.fullPath.match(new RegExp(`^${ this.classItem?.url }`)),
+                    'is-class-selected': this.$route.name === 'classDetail',
+                    'is-green': this.classItem?.homebrew
+                }
+            },
+
             toggleArch() {
                 this.submenu.show = !this.submenu.show;
             },
@@ -376,6 +374,13 @@
 
                 &.router-link-active {
                     background-color: var(--primary-active);
+
+                    .class-item__arch-item {
+                        &_name,
+                        &_book {
+                            color: var(--text-btn-color);
+                        }
+                    }
                 }
             }
         }

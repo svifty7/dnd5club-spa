@@ -114,10 +114,12 @@
 <script>
     import SvgIcon from '@/components/UI/SvgIcon';
     import { RouterLink } from 'vue-router';
+    import { useResizeObserver } from '@vueuse/core/index';
 
     export default {
         name: 'RaceItem',
         components: { SvgIcon },
+        inheritAttrs: false,
         props: {
             raceItem: {
                 type: Object,
@@ -131,7 +133,6 @@
                 submenu: {
                     show: false
                 },
-                resizeObserver: null,
             }
         },
         computed: {
@@ -161,15 +162,8 @@
         },
         mounted() {
             this.$nextTick(() => {
-                this.resizeObserver = new ResizeObserver(this.updateGrid);
-
-                this.resizeObserver.observe(this.$refs.raceItem);
-
-                this.updateGrid()
+                useResizeObserver(this.$refs.raceItem, this.updateGrid);
             });
-        },
-        beforeUnmount() {
-            this.resizeObserver.unobserve(this.$refs.raceItem);
         },
         methods: {
             getParentClasses(isActive) {

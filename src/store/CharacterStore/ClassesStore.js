@@ -9,19 +9,19 @@ export const useClassesStore = defineStore('ClassesStore', {
     state: () => ({
         classes: [],
         selectedClass: undefined,
-        selectedArchetype: undefined,
+        currentArchetypes: [],
     }),
 
     getters: {
         getClasses: state => state.classes,
         getCurrentClass: state => state.selectedClass,
-        getCurrentArchetype: state => state.selectedArchetype
+        getCurrentArchetypes: state => state.currentArchetypes
     },
 
     actions: {
-        async initClassList() {
+        async classesQuery() {
             try {
-                const res = await http.get('/classes');
+                const res = await http.post('/classes');
 
                 if (res.status !== 200) {
                     console.error(res.statusText);
@@ -66,15 +66,40 @@ export const useClassesStore = defineStore('ClassesStore', {
             }
         },
 
-        async setClassInfo(className, archName) {
+        async classInfoQuery(className, archName) {
             try {
                 let url = `/classes/${ className }`;
+
+                const getArchetypes = list => {
+                    const sorted = [];
+
+                    for (let i = 0; i < list.length; i++) {
+                        const el = list[i];
+
+                        if (Array.isArray(el) && el.length) {
+                            sorted.push(...el);
+                        }
+                    }
+
+                    return sorted.map(el => ({
+                        group: el.name,
+                        list: el.list.map(arch => ({
+                            name: arch.name.rus,
+                            source: arch.source.shortName,
+                            url: arch.url
+                        }))
+                    }));
+                }
+
+                const classLink = this.classes.find(classItem => classItem.url === url);
+
+                this.currentArchetypes = getArchetypes(classLink.archetypes);
 
                 if (archName) {
                     url += `/${ archName }`;
                 }
 
-                const res = await http.get(url);
+                const res = await http.post(url);
 
                 if (res.status !== 200) {
                     console.error(res.statusText);

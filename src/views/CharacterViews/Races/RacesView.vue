@@ -1,27 +1,23 @@
 <template>
     <content-layout :show-right-side="$route.name === 'raceDetail'">
         <template #filter>
-            <list-filter>
-                <filter-item-source/>
-
-                <filter-item-checkboxes name="Кость хитов"/>
-            </list-filter>
+            <list-filter store-key="races"/>
         </template>
 
         <template #items>
             <div
                 v-masonry="'races-items'"
                 transition-duration="0.15s"
-                class="races__items_body--inner"
+                class="race-items"
                 item-selector=".race-item"
                 gutter="16"
-                percent-position="true"
                 horizontal-order="true"
             >
                 <race-item
                     v-for="(el, key) in getRaces"
                     :key="key"
                     :race-item="el"
+                    :to="{ path: el.url }"
                 />
             </div>
         </template>
@@ -30,8 +26,6 @@
 
 <script>
     import ListFilter from '@/components/filter/ListFilter';
-    import FilterItemSource from '@/components/filter/FilterItem/FilterItemSource';
-    import FilterItemCheckboxes from '@/components/filter/FilterItem/FilterItemCheckboxes';
     import { mapState } from 'pinia/dist/pinia';
     import { useRacesStore } from '@/store/CharacterStore/RacesStore';
     import ContentLayout from '@/components/content/ContentLayout';
@@ -42,14 +36,7 @@
         components: {
             RaceItem,
             ContentLayout,
-            FilterItemCheckboxes,
-            FilterItemSource,
             ListFilter,
-        },
-        async beforeRouteEnter() {
-            const store = useRacesStore();
-
-            await store.initRaceList();
         },
         computed: {
             ...mapState(useRacesStore, ['getRaces', 'getCurrentRace']),

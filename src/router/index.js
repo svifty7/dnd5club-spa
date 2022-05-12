@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useUIStore } from '@/store/UIStore/UIStore';
 import { useClassesStore } from '@/store/CharacterStore/ClassesStore';
 import { useRacesStore } from '@/store/CharacterStore/RacesStore';
+import { useSpellsStore } from '@/store/SpellsStore/SpellsStore';
 
 const routes = [
     {
@@ -20,7 +21,7 @@ const routes = [
             beforeEnter: async (to, from, next) => {
                 const store = useClassesStore();
 
-                await store.initClassList();
+                await store.classesQuery();
 
                 next();
             },
@@ -31,7 +32,7 @@ const routes = [
                 beforeEnter: async (to, from, next) => {
                     const store = useClassesStore();
 
-                    await store.setClassInfo(to.params.className, to.params.classArchetype);
+                    await store.classInfoQuery(to.params.className, to.params.classArchetype);
 
                     next()
                 }
@@ -40,6 +41,13 @@ const routes = [
             name: 'races',
             path: '/races',
             component: () => import('@/views/CharacterViews/Races/RacesView.vue'),
+            beforeEnter: async (to, from, next) => {
+                const store = useRacesStore();
+
+                await store.racesQuery();
+
+                next();
+            },
             children: [{
                 name: 'raceDetail',
                 path: ':raceName/:subrace?',
@@ -47,7 +55,7 @@ const routes = [
                 beforeEnter: async (to, from, next) => {
                     const store = useRacesStore();
 
-                    await store.setRaceInfo(to.params.raceName, to.params.subrace);
+                    await store.raceInfoQuery(to.params.raceName, to.params.subrace);
 
                     next()
                 },
@@ -69,10 +77,24 @@ const routes = [
         name: 'spells',
         path: '/spells',
         component: () => import('@/views/SpellViews/Spells/SpellsView.vue'),
+        beforeEnter: async (to, from, next) => {
+            const store = useSpellsStore();
+
+            await store.spellsQuery();
+
+            next()
+        },
         children: [{
             name: 'spellDetail',
-            path: 'spells/:spellName',
-            component: () => import('@/views/SpellViews/Spells/SpellDetail.vue')
+            path: ':spellName',
+            component: () => import('@/views/SpellViews/Spells/SpellDetail.vue'),
+            beforeEnter: async (to, from, next) => {
+                const store = useSpellsStore();
+
+                await store.spellInfoQuery(to.params.spellName);
+
+                next()
+            },
         }]
     }, {
         name: 'inventory',

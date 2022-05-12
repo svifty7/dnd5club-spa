@@ -71,6 +71,7 @@
 
                 <div class="home__telegram_footer">
                     <a href="/telegram">Описание</a>
+
                     <a
                         href="//t.me/dnd5club_bot"
                         target="_blank"
@@ -468,14 +469,10 @@
             }
 
             &_footer {
-                display: flex;
-                flex-wrap: wrap;
-
                 a {
                     font-weight: 600;
-                    display: flex;
 
-                    & + & {
+                    &:nth-child(n+2) {
                         margin-left: 8px;
                     }
                 }

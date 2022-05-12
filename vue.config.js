@@ -23,7 +23,7 @@ module.exports = {
             .end()
             .use('svg-sprite-loader')
             .loader('svg-sprite-loader')
-            .options({ symbolId: 'icon-[name]' })
+            .options({ symbolId: 'dnd5club-icon-[name]' })
             .end()
             .use('svgo-loader')
             .loader('svgo-loader')

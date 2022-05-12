@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import HTTPService from '@/utils/HTTPService';
+import _ from 'lodash';
 
 const http = new HTTPService();
 
@@ -11,12 +12,12 @@ export const useSpellsStore = defineStore('SpellsStore', {
     }),
 
     getters: {
-        computedSpells: state => state.spells,
-        currentSpell: state => state.selectedSpell
+        getSpells: state => state.spells,
+        getCurrentSpell: state => state.selectedSpell
     },
 
     actions: {
-        async getSpellList() {
+        async spellsQuery() {
             try {
                 const apiOptions = {
                     page: 1,
@@ -35,7 +36,17 @@ export const useSpellsStore = defineStore('SpellsStore', {
                 };
                 const resp = await http.post('/spells', apiOptions);
 
-                this.spells = resp.data;
+                this.spells = _.sortBy(resp.data, ['level'])
+            } catch (err) {
+                console.error(err)
+            }
+        },
+
+        async spellInfoQuery(spellName) {
+            try {
+                const resp = await http.post(`/spells/${spellName}`);
+
+                this.selectedSpell = resp.data;
             } catch (err) {
                 console.error(err)
             }
