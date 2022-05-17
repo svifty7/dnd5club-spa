@@ -62,8 +62,8 @@
                 setTheme: 'setTheme'
             }),
 
-            switchTheme() {
-                this.setTheme(this.currentIcon);
+            async switchTheme() {
+                await this.setTheme(this.currentIcon);
             }
         }
     }

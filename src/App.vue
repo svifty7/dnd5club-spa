@@ -1,5 +1,6 @@
 <template>
     <img
+        v-if="currentTheme"
         :src="require(`@/assets/img/${currentTheme}/bg-main.webp`)"
         class="dnd5club__background"
         alt="background"
@@ -17,7 +18,6 @@
 <script>
     import { useUIStore } from '@/store/UIStore/UIStore';
     import NavBar from '@/components/navigation/NavBar';
-    import { useFilterStore } from '@/store/FilterStore/FilterStore';
 
     export default {
         name: 'App',
@@ -25,8 +25,7 @@
             NavBar,
         },
         data: () => ({
-            uiStore: useUIStore(),
-            filterStore: useFilterStore()
+            uiStore: useUIStore()
         }),
         computed: {
             currentTheme() {
@@ -34,15 +33,13 @@
             },
         },
         async beforeMount() {
-            this.uiStore.setTheme();
+            await this.uiStore.setTheme();
 
             document.documentElement.style.setProperty('--max-vh', `${ window.innerHeight }px`);
 
             window.addEventListener('resize', () => {
                 document.documentElement.style.setProperty('--max-vh', `${ window.innerHeight }px`);
             });
-
-            await this.filterStore.initFilters();
         },
     };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <content-layout :show-right-side="showRightSide">
         <template #filter>
-            <list-filter store-key="classes"/>
+            <list-filter/>
         </template>
 
         <template #items>

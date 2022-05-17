@@ -23,6 +23,7 @@
             </div>
 
             <button
+                v-if="isFilterCustomized"
                 type="button"
                 class="filter-item__button filter-item__button--reset"
                 @click.left.exact.prevent="resetSources"
@@ -92,6 +93,23 @@
         data: () => ({
             opened: true,
         }),
+        computed: {
+            isFilterCustomized() {
+                if (!this.modelValue) {
+                    return false
+                }
+
+                for (const group of this.modelValue) {
+                    for (const value of group.values) {
+                        if (value.value !== value.default) {
+                            return true
+                        }
+                    }
+                }
+
+                return false
+            },
+        },
         methods: {
             setGroupStatus(e, index) {
                 if (!this.modelValue[index]?.values?.length) {

@@ -1,7 +1,7 @@
 <template>
     <content-layout :show-right-side="$route.name === 'raceDetail'">
         <template #filter>
-            <list-filter store-key="races"/>
+            <list-filter/>
         </template>
 
         <template #items>

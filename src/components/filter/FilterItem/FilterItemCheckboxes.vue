@@ -1,5 +1,6 @@
 <template>
     <div
+        v-if="modelValue?.length"
         class="filter-item"
         :class="{ 'is-active': opened }"
     >
@@ -22,6 +23,7 @@
             </div>
 
             <button
+                v-if="isFilterCustomized"
                 type="button"
                 class="filter-item__button filter-item__button--reset"
                 @click.left.exact.prevent="resetValues"
@@ -73,6 +75,24 @@
         data: () => ({
             opened: false
         }),
+        computed: {
+            isFilterCustomized() {
+                if (!this.modelValue) {
+                    return false;
+                }
+
+                for (const value of this.modelValue) {
+                    if (value.value !== value.default) {
+                        return true
+                    }
+                }
+
+                return false
+            },
+        },
+        beforeMount() {
+            this.opened = this.isFilterCustomized;
+        },
         methods: {
             resetValues() {
                 const values = _.cloneDeep(this.modelValue)

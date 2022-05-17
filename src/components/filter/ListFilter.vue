@@ -26,7 +26,7 @@
             </div>
 
             <button
-                v-if="storeKey && !!filter"
+                v-if="filter"
                 type="button"
                 class="filter__button"
                 :class="{ 'is-opened': showed }"
@@ -42,7 +42,7 @@
             </button>
 
             <button
-                v-if="storeKey && !!filter"
+                v-if="!!filter && isFilterCustomized"
                 v-tooltip.bottom-end="'Стереть фильтр'"
                 type="button"
                 class="filter__button"
@@ -53,7 +53,8 @@
         </div>
 
         <div
-            v-if="showed"
+            v-if="!!filter"
+            v-show="showed"
             class="filter__dropdown"
         >
             <div class="filter__dropdown_body">
@@ -85,20 +86,25 @@
     export default {
         name: 'ListFilter',
         components: { FilterItemCheckboxes, FilterItemSources, SvgIcon },
-        props: {
-            storeKey: {
-                type: String,
-                default: ''
-            }
-        },
         emits: ['clear-filter', 'search', 'update'],
         data: () => ({
             search: '',
             showed: false,
             filterStore: useFilterStore(),
-            filter: undefined
         }),
         computed: {
+            filter: {
+                get() {
+                    return this.filterStore?.getFilter || undefined;
+                },
+
+                async set(value) {
+                    await this.filterStore.saveFilter(value);
+
+                    this.$emit('update', this.filterStore.getQueryParams());
+                }
+            },
+
             otherFilters: {
                 get() {
                     return this.filter?.other || this.filter || [];
@@ -106,90 +112,41 @@
 
                 set(value) {
                     if (this.filter?.other) {
-                        this.filter.other = _.cloneDeep(value);
+                        this.filter = {
+                            ...this.filter,
+                            other: value
+                        };
 
                         return
                     }
 
-                    this.filter = _.cloneDeep(value);
+                    this.filter = value;
                 }
             },
 
             isFilterCustomized() {
-                if (this.filter?.sources) {
-                    for (const group of this.filter.sources) {
-                        for (const value of group.values) {
-                            if (value.value !== value.default) {
-                                return true
-                            }
-                        }
-                    }
-                }
-
-                for (const group of this.otherFilters) {
-                    for (const value of group.values) {
-                        if (value.value !== value.default) {
-                            return true
-                        }
-                    }
-                }
-
-                return false
+                return this.filterStore.isFilterCustomized;
             },
-
-            resultQueryParams() {
-                return undefined
-            },
-        },
-        beforeMount() {
-            this.initFilter();
         },
         methods: {
-            initFilter() {
-                this.filter = _.cloneDeep(this.filterStore?.getFilters[this.storeKey]);
-            },
-
             setSourcesValue(value) {
-                this.filter.sources = _.cloneDeep(value);
-
-                this.emitFilter();
+                this.filter = {
+                    ...this.filter,
+                    sources: value
+                };
             },
 
             setOtherValue(value, index) {
                 const otherFilters = _.cloneDeep(this.otherFilters);
 
-                otherFilters[index].values = _.cloneDeep(value);
+                otherFilters[index].values = value;
 
                 this.otherFilters = otherFilters;
-
-                this.emitFilter();
             },
 
-            resetFilter() {
-                if (this.filter?.sources) {
-                    this.filter.sources = _.cloneDeep(this.filter.sources)
-                        .map(group => ({
-                            ...group,
-                            values: group.values.map(value => ({
-                                ...value,
-                                value: value.default
-                            }))
-                        }));
-                }
-
-                this.otherFilters = _.cloneDeep(this.otherFilters)
-                    .map(group => ({
-                        ...group,
-                        values: group.values.map(value => ({
-                            ...value,
-                            value: value.default
-                        }))
-                    }));
+            async resetFilter() {
+                await this.filterStore.resetFilter();
             },
-
-            emitFilter() {
-                this.$emit('update', this.filter);
-            }
         }
     }
 </script>

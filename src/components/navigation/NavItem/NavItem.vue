@@ -5,13 +5,13 @@
         v-bind="$props"
         :to="{ name: navItem.name }"
         custom
-        @mouseenter="setSubmenuPositionClass"
-        @mouseleave="setSubmenuPositionClass"
     >
         <div
             v-bind="$attrs"
             class="nav-item"
             :class="{'router-link-active': isActive, ...classList}"
+            @mouseenter="setSubmenuPositionClass"
+            @mouseleave="setSubmenuPositionClass"
         >
             <div
                 v-if="hasChildren"

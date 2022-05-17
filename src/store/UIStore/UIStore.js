@@ -1,5 +1,6 @@
-import { UI } from '@/common/const/UI';
+import { DB_NAME, THEME_DB_KEY } from '@/common/const/UI';
 import { defineStore } from 'pinia';
+import localforage from 'localforage';
 
 // eslint-disable-next-line import/prefer-default-export
 export const useUIStore = defineStore('UIStore', {
@@ -126,7 +127,11 @@ export const useUIStore = defineStore('UIStore', {
         },
         content: {
             fullscreen: false,
-        }
+        },
+        store: localforage.createInstance({
+            name: DB_NAME,
+            storeName: 'UI'
+        })
     }),
 
     getters: {
@@ -136,21 +141,33 @@ export const useUIStore = defineStore('UIStore', {
     },
 
     actions: {
-        setTheme(payload = '') {
-            const storageTheme = localStorage.getItem(UI.Theme.storageKey) || 'dark';
-            const themeName = payload || storageTheme;
+        async setTheme(payload = '') {
+            try {
+                await this.store.ready();
 
-            this.theme = themeName;
+                const storageTheme = await this.store.getItem(THEME_DB_KEY)
+                    || localStorage.getItem('dnd5club_theme')
+                    || 'dark';
+                const themeName = payload || storageTheme;
 
-            localStorage.setItem(UI.Theme.storageKey, themeName);
+                this.theme = themeName;
 
-            const html = document.querySelector('html');
+                this.store.setItem(THEME_DB_KEY, themeName);
 
-            if (!html) {
-                return;
+                if (localStorage.getItem(THEME_DB_KEY)) {
+                    localStorage.removeItem(THEME_DB_KEY);
+                }
+
+                const html = document.querySelector('html');
+
+                if (!html) {
+                    return;
+                }
+
+                html.dataset.theme = `theme-${ themeName }`;
+            } catch (err) {
+                console.error(err);
             }
-
-            html.dataset.theme = `theme-${ themeName }`;
         },
 
         closeMenu() {

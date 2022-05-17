@@ -1,7 +1,7 @@
 <template>
     <content-layout :show-right-side="showRightSide">
         <template #filter>
-            <list-filter store-key="spells"/>
+            <list-filter/>
         </template>
 
         <template #items>
@@ -47,8 +47,3 @@
         },
     }
 </script>
-
-<style lang="scss" scoped>
-    .spells {
-    }
-</style>

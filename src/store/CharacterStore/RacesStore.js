@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import HTTPService from '@/utils/HTTPService';
 import _ from 'lodash';
+import { useFilterStore } from '@/store/FilterStore/FilterStore';
 
 const http = new HTTPService();
 
@@ -19,7 +20,31 @@ export const useRacesStore = defineStore('RacesStore', {
     actions: {
         async racesQuery() {
             try {
-                const res = await http.post('/races');
+                const filterStore = useFilterStore();
+
+                await filterStore.initFilter('races');
+
+                const apiOptions = {
+                    page: 1,
+                    limit: 30,
+                    search: {
+                        exact: false,
+                        value: ''
+                    },
+                    order: [{
+                        field: 'level',
+                        direction: 'asc'
+                    }, {
+                        field: 'name',
+                        direction: 'asc'
+                    }]
+                };
+
+                if (filterStore.getFilter) {
+                    apiOptions.filter = filterStore.getFilter;
+                }
+
+                const res = await http.post('/races', apiOptions);
 
                 if (res.status !== 200) {
                     console.error(res.statusText);
