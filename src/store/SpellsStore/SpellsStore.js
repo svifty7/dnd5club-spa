@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import HTTPService from '@/utils/HTTPService';
-import _ from 'lodash';
 import { useFilterStore } from '@/store/FilterStore/FilterStore';
 
 const http = new HTTPService();
@@ -40,19 +39,13 @@ export const useSpellsStore = defineStore('SpellsStore', {
                     }]
                 };
 
-                if (filterStore.getFilter) {
-                    apiOptions.filter = filterStore.getFilter;
+                if (filterStore.getFilter && filterStore.isFilterCustomized) {
+                    apiOptions.filter = filterStore.getQueryParams();
                 }
 
                 const resp = await http.post('/spells', apiOptions);
 
-                this.spells = [];
-
-                for (let i = 0; i < resp.data.length && i < 30; i++) {
-                    this.spells.push(resp.data[i]);
-                }
-
-                this.spells = _.sortBy(this.spells, ['level'])
+                this.spells = resp.data;
             } catch (err) {
                 console.error(err)
             }
@@ -60,7 +53,7 @@ export const useSpellsStore = defineStore('SpellsStore', {
 
         async spellInfoQuery(spellName) {
             try {
-                const resp = await http.post(`/spells/${spellName}`);
+                const resp = await http.post(`/spells/${ spellName }`);
 
                 this.selectedSpell = resp.data;
             } catch (err) {
